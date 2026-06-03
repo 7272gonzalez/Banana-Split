@@ -3,8 +3,8 @@ import { Routine } from '../types';
 export const ROUTINES: Routine[] = [
   {
     id: 'front-split-prep',
-    name: 'Banana Split Focus (Front Splits Prep)',
-    description: 'The golden path to your first front split. This gentle yet deep routine targets your hamstrings, hip flexors, and calf muscles. Ideal for complete beginners performed daily.',
+    name: 'Front Splits Prep',
+    description: 'A gentle, master-crafted beginner routine targeting hamstrings and hip flexors for daily split progress.',
     durationMinutes: 9,
     level: 'Beginner',
     focus: 'Front Split',
@@ -154,8 +154,8 @@ export const ROUTINES: Routine[] = [
   },
   {
     id: 'middle-split-prep',
-    name: 'Peel Open (Middle / Side Splits Prep)',
-    description: 'A deep groin, inner thigh, and pelvis opener. Side splits require supple adductors and extremely mobile hip joints. Perfect for building lateral flexibility.',
+    name: 'Middle Splits Prep',
+    description: 'A deep inner thigh and pelvis opener designed to unlock your hip joints and lateral flexibility.',
     durationMinutes: 8,
     level: 'Beginner',
     focus: 'Middle Split',
@@ -249,8 +249,8 @@ export const ROUTINES: Routine[] = [
   },
   {
     id: 'banana-maintenance',
-    name: 'Daily Banana Maintenance (Easy Hip Loose-up)',
-    description: 'A quick 5-minute snack-sized routine designed to counter the tightening effects of sitting all day. Keeps your joints juicy and loose for daily flexibility.',
+    name: 'Daily Hip Maintenance',
+    description: 'A quick 5-minute desk-break routine to loosen tight joints and build daily pelvic flexibility.',
     durationMinutes: 5,
     level: 'Beginner',
     focus: 'Hips & Hamstrings',

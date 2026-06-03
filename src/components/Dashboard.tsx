@@ -383,11 +383,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   </span>
                 </div>
 
-                <h3 className="text-lg font-sans font-extrabold text-slate-950 group-hover:text-amber-600 transition-colors line-clamp-1">
+                <h3 className="text-lg font-sans font-extrabold text-slate-950 group-hover:text-amber-600 transition-colors whitespace-normal break-words">
                   {routine.name}
                 </h3>
                 
-                <p className="text-xs text-slate-600 font-medium mt-2 line-clamp-3 leading-relaxed">
+                <p className="text-xs text-slate-600 font-semibold mt-2 whitespace-normal break-words leading-relaxed">
                   {routine.description}
                 </p>
 
@@ -398,9 +398,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   </span>
                   <span className="text-[10px] font-mono font-bold text-slate-650 bg-slate-50 border border-slate-900/30 px-2 py-0.5 rounded-full">
                     ⏱️ {routine.durationMinutes} Mins
-                  </span>
-                  <span className="text-[10px] font-mono font-bold text-emerald-850 bg-emerald-50 border border-slate-900/30 px-2 py-0.5 rounded-full">
-                    ⭐️ {routine.bananaMultiplier}x multiplier
                   </span>
                 </div>
               </div>

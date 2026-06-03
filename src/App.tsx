@@ -11,10 +11,11 @@ import {
 import { Dashboard } from './components/Dashboard';
 import { RoutineTimer } from './components/RoutineTimer';
 import { ProgressTracker } from './components/ProgressTracker';
-import { Compass, CalendarDays, StretchHorizontal, Banana, Sparkles, Footprints } from 'lucide-react';
+import { PrivacySecurity } from './components/PrivacySecurity';
+import { Compass, CalendarDays, StretchHorizontal, Banana, Sparkles, Footprints, ShieldCheck } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'progress'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'progress' | 'privacy'>('dashboard');
   const [activeRoutine, setActiveRoutine] = useState<Routine | null>(null);
 
   // Core model state
@@ -176,19 +177,34 @@ export default function App() {
             onSelectRoutine={(routine) => setActiveRoutine(routine)}
             onNavigateToProgress={() => setActiveTab('progress')}
           />
-        ) : (
+        ) : activeTab === 'progress' ? (
           <ProgressTracker 
             photos={photos}
             logs={logs}
             onSavePhoto={handleSaveProgressPhoto}
             onDeletePhoto={handleDeletePhoto}
           />
+        ) : (
+          <PrivacySecurity 
+            onBack={() => setActiveTab('dashboard')}
+          />
         )}
       </main>
 
       {/* Footer Branding - clean custom footer */}
-      <footer className="bg-white border-t-4 border-slate-900 py-8 text-center text-xs font-semibold text-slate-500">
+      <footer className="bg-white border-t-4 border-slate-900 py-8 text-center text-xs font-semibold text-slate-550 flex flex-col items-center justify-center gap-3">
         <p>© {new Date().getFullYear()} Banana Split. Stretching safely and progressively yields sweet, ripe 180° splits.</p>
+        <div className="flex items-center gap-4">
+          <button
+            id="footer-privacy-link"
+            onClick={() => setActiveTab('privacy')}
+            className={`font-mono text-[10px] font-black tracking-wider uppercase underline hover:text-[#1e293b] cursor-pointer transition-all ${
+              activeTab === 'privacy' ? 'text-amber-600 bg-yellow-100 border border-slate-900/20 px-2 py-0.5 rounded-md' : 'text-slate-500'
+            }`}
+          >
+            🛡️ Privacy & Security Details
+          </button>
+        </div>
       </footer>
     </div>
   );
