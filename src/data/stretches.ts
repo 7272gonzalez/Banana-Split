@@ -78,7 +78,7 @@ export const ROUTINES: Routine[] = [
           'Gently draw your right heel closer to your buttocks.',
           'Keep your chest searching forward and upward.'
         ],
-        illustrationType: 'low-lunge' // Custom illustration handles variants
+        illustrationType: 'kneeling-quad-right'
       },
       {
         id: 'fs-6',
@@ -92,7 +92,7 @@ export const ROUTINES: Routine[] = [
           'Draw the foot in while letting your hips sink forward.',
           'Exhale all tension as the deep front-thigh muscle releases.'
         ],
-        illustrationType: 'low-lunge'
+        illustrationType: 'kneeling-quad-left'
       },
       {
         id: 'fs-7',
@@ -134,7 +134,7 @@ export const ROUTINES: Routine[] = [
           'Supporting your entire body weight with your hands on your blocks, slowly slide your left heel forward.',
           'Maintain square hips (facing forward) and breathe softly for the final hold of the left side.'
         ],
-        illustrationType: 'straddle'
+        illustrationType: 'left-split'
       },
       {
         id: 'fs-10',
@@ -148,7 +148,7 @@ export const ROUTINES: Routine[] = [
           'Supporting your entire body weight with your hands on your blocks, slowly slide your right heel forward.',
           'Keep your hips square to the front and ease into the right-side splits hold gently.'
         ],
-        illustrationType: 'straddle'
+         illustrationType: 'right-split'
       }
     ]
   },
@@ -243,7 +243,7 @@ export const ROUTINES: Routine[] = [
           'Ensure your knees and toes are pointing straight forward or slightly upward.',
           'Lower yourself to a safe depth and hold, letting gravity gradually pull you closer to the floor.'
         ],
-        illustrationType: 'straddle'
+        illustrationType: 'middle-split'
       }
     ]
   },
@@ -282,7 +282,7 @@ export const ROUTINES: Routine[] = [
           'Bring your palms to touch in prayer position in front of your chest.',
           'Keep your shoulders down, and sit upright, pressing elbows outwards.'
         ],
-        illustrationType: 'butterfly'
+        illustrationType: 'yogi-squat'
       },
       {
         id: 'm-3',

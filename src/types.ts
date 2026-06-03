@@ -5,7 +5,7 @@ export interface Stretch {
   instructions: string[];
   duration: number; // in seconds
   tips: string;
-  illustrationType: 'hamstring-fold' | 'low-lunge' | 'half-split' | 'pigeon' | 'butterfly' | 'frog' | 'lizard' | 'straddle';
+  illustrationType: 'hamstring-fold' | 'low-lunge' | 'half-split' | 'pigeon' | 'butterfly' | 'frog' | 'lizard' | 'straddle' | 'front-split' | 'left-split' | 'right-split' | 'middle-split' | 'kneeling-quad-left' | 'kneeling-quad-right' | 'yogi-squat';
 }
 
 export interface Routine {
@@ -27,6 +27,7 @@ export interface ProgressPhoto {
   notes: string;
   angleValue: number; // in degrees
   markers: { x: number; y: number }[]; // 3 points to determine the angle
+  splitType?: 'right' | 'left' | 'center';
 }
 
 export interface RoutineLog {

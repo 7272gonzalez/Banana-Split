@@ -58,6 +58,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const angleValue = hasPhotos ? maxAngleRecorded : 0;
   const progressPercent = hasPhotos ? Math.min(100, Math.round((angleValue / 180) * 100)) : 0;
 
+  // Split-specific calculations
+  const rightPhotos = photos.filter(p => p.splitType === 'right');
+  const leftPhotos = photos.filter(p => p.splitType === 'left');
+  const centerPhotos = photos.filter(p => p.splitType === 'center' || !p.splitType);
+
+  const maxRightAngle = rightPhotos.length > 0 ? Math.max(...rightPhotos.map(p => p.angleValue)) : 0;
+  const maxLeftAngle = leftPhotos.length > 0 ? Math.max(...leftPhotos.map(p => p.angleValue)) : 0;
+  const maxCenterAngle = centerPhotos.length > 0 ? Math.max(...centerPhotos.map(p => p.angleValue)) : 0;
+
+  const rightPercent = maxRightAngle > 0 ? Math.min(100, Math.round((maxRightAngle / 180) * 100)) : 0;
+  const leftPercent = maxLeftAngle > 0 ? Math.min(100, Math.round((maxLeftAngle / 180) * 100)) : 0;
+  const centerPercent = maxCenterAngle > 0 ? Math.min(100, Math.round((maxCenterAngle / 180) * 100)) : 0;
+
   // Generate calendar dates for the past 14 days to show on a mini tracker
   const getPastFortnight = () => {
     const dates = [];
@@ -79,15 +92,46 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   const fortnight = getPastFortnight();
 
-  // Find some daily wisdom tip corresponding to user stats
+  // Curated Daily Pro-Tips provided by the user
+  const PRO_TIPS = [
+    "Never stretch cold. Always do 5–10 minutes of light cardio (jumping jacks, dancing, or jogging) to get the blood flowing first.",
+    "Warm muscles are like taffy. Cold muscles are like cold rubber bands—they snap instead of stretching.",
+    "Consistency beats intensity. Stretching for 15 minutes every day is infinitely better than stretching for two hours once a week.",
+    "Breathe through the tension. Deep, slow exhalations signal your nervous system that it’s safe to let the muscles relax.",
+    "Pain is a stop sign. You want to feel a deep, satisfying 'clean' stretch, not sharp, pinching, or shooting pain.",
+    "Square your hips. For front splits, keep your hips facing forward like headlights, rather than letting the back hip open up.",
+    "Engage your core. A stable torso protects your lower back and gives your hips a solid foundation to stretch from.",
+    "Point and flex. Alternate between pointing your toes and flexing your feet to target different parts of your legs and calves.",
+    "Don't forget your hip flexors. The back leg in a front split requires massive hip flexor flexibility, not just hamstring length!",
+    "Prop yourself up. Use yoga blocks, books, or the back of a chair under your hands to take the weight off your legs.",
+    "Gravity is your friend. In gravity-assisted stretches (like lying on your back and letting your legs open), let go and let gravity do the work.",
+    "Celebrate the millimeters. Progress in flexibility is measured in tiny increments. Every millimeter closer to the floor is a victory!",
+    "Take progress photos. Sometimes it feels like you aren't moving, but looking back at a photo from a month ago will prove otherwise.",
+    "Every body is built differently. Bone structure and hip socket depth vary. Your split will look uniquely yours, and that’s perfect.",
+    "Expect good days and tight days. Hydration, stress, and sleep all affect your flexibility. Be kind to your body on tight days.",
+    "Try PNF stretching. Contract the muscle you are stretching for 5 seconds, relax, and then sink deeper into the stretch.",
+    "Active flexibility matters. Don't just sit in splits; strengthen your glutes and quads so your body can actually support the position.",
+    "Hold for at least 30 seconds. It takes time for the 'stretch reflex' to relax and allow the muscle to truly elongate.",
+    "Massage your muscles. Using a foam roller or massage ball on your hamstrings and glutes can help release stubborn tension.",
+    "Dress for warmth. Wear sweatpants or leg warmers. Keeping your muscles physically warm helps them stay pliable.",
+    "Slightly bend your knees if needed. Micro-bending the knees protects your joints and ensures the stretch stays in the muscle belly.",
+    "Rest days are mandatory. Your muscles need time to recover and rebuild. Dedicate 1–2 days a week to gentle movement or rest.",
+    "Hydrate like it's your job. Dehydrated muscles are stiff and much more prone to cramping and injury.",
+    "Slide out safely. When you are done, don’t try to jump up. Roll onto your side or use your hands to carefully push yourself out.",
+    "Put on a great playlist. Distract your brain with your favorite music or a good podcast while you hold your stretches.",
+    "Do a gentle evening stretch. Stretching before bed can relax your nervous system and help you sleep better.",
+    "Be patient with your 'bad side.' Almost everyone has one leg that is less flexible than the other. Give it a little extra love.",
+    "Visualize the split. Mental rehearsal is a powerful tool used by elite gymnasts and dancers. Picture yourself hitting the floor effortlessly.",
+    "Trust the process. You will get there. Enjoy the feeling of opening up your body and becoming more agile every day!"
+  ];
+
+  // Find some daily wisdom tip corresponding to user stats or date
   const getDailyTip = () => {
-    if (stats.streak === 0) {
-      return "The hardest part of doing the splits is sitting down on the mat for the first stretch. Pick any 5-minute routine and get started!";
-    }
-    if (stats.streak > 0 && stats.streak < 3) {
-      return "Fantastic start! Remember: never bounce while in a stretch. Hold warm, steady tension and let your muscles naturally lengthen on deep exhales.";
-    }
-    return "You are on a roll! Ensure you stay super hydrated today. Water keeps your myofascial tissues slippery and flexible!";
+    const today = new Date();
+    // Deterministic selection based on day of month + month index
+    const dayIndex = today.getDate() + (today.getMonth() * 31);
+    const tipIndex = dayIndex % PRO_TIPS.length;
+    return PRO_TIPS[tipIndex];
   };
 
   const completedRoutinesGroup = logs.slice(0, 5);
@@ -146,68 +190,121 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
 
-        {/* Milestone: Full Split styling block directly mirroring design spec */}
-        <div className="md:col-span-5 bento-card p-6 flex flex-col justify-between bg-indigo-600 border-2 border-slate-900 text-white">
-          <div className="flex justify-between items-start">
+        {/* Milestone Stage: Three-split progressive tracker directly satisfying user request */}
+        <div className="md:col-span-5 bento-card p-6 flex flex-col justify-between bg-indigo-100 border-2 border-slate-900 text-slate-950">
+          <div className="flex justify-between items-start mb-2">
             <div>
-              <span className="text-[10px] font-mono uppercase text-indigo-200 font-bold tracking-widest">Milestone Stage</span>
-              <h3 className="font-extrabold text-lg text-white mt-0.5">Full 180° Touchdown</h3>
+              <span className="text-[10px] font-mono uppercase text-indigo-950 font-black tracking-widest">Milestones Tracker</span>
+              <h3 className="font-extrabold text-lg text-slate-950 mt-0.5 font-sans">180° Touchdown Progress</h3>
             </div>
-            <span className="text-xs px-2.5 py-1 bg-indigo-500 rounded-lg border border-indigo-400 font-bold">
-              {progressPercent}% there
-            </span>
           </div>
           
-          <div className="my-4">
-            {/* The striped bento progress fill */}
-            <div className="w-full h-8 bg-indigo-900 rounded-full border-2 border-slate-900 overflow-hidden relative shadow-[inner_2px_2px_4px_rgba(0,0,0,0.4)]">
-              <div 
-                className="h-full progress-fill border-r-2 border-slate-900 transition-all duration-500"
-                style={{ width: `${progressPercent}%` }}
-              ></div>
+          <div className="space-y-3.5 my-3">
+            {/* Right Splits */}
+            <div className="space-y-1">
+              <div className="flex justify-between items-center text-xs font-mono">
+                <span className="font-black text-indigo-950 flex items-center gap-1">▶️ Right Splits</span>
+                <span className="font-black text-indigo-950 bg-white/60 px-1.5 py-0.5 rounded border border-slate-900/10 shadow-[1px_1px_0px_rgba(0,0,0,0.15)]">
+                  {maxRightAngle > 0 ? `${maxRightAngle}°` : '0°'} ({rightPercent}%)
+                </span>
+              </div>
+              <div className="w-full h-5 bg-white rounded-full border-2 border-slate-900 overflow-hidden relative shadow-[inner_1px_1px_2px_rgba(0,0,0,0.3)]">
+                {rightPercent > 0 && (
+                  <div 
+                    className="h-full progress-fill border-r-2 border-slate-900 transition-all duration-500"
+                    style={{ width: `${rightPercent}%` }}
+                  ></div>
+                )}
+              </div>
             </div>
-            
-            <div className="flex items-center justify-between mt-2 text-[11px] font-mono text-indigo-200">
-              <span>Hips Angle: {hasPhotos ? `${angleValue}°` : '0°'}</span>
-              <span>Target: 180°</span>
+
+            {/* Left Splits */}
+            <div className="space-y-1">
+              <div className="flex justify-between items-center text-xs font-mono">
+                <span className="font-black text-indigo-950 flex items-center gap-1">◀️ Left Splits</span>
+                <span className="font-black text-indigo-950 bg-white/60 px-1.5 py-0.5 rounded border border-slate-900/10 shadow-[1px_1px_0px_rgba(0,0,0,0.15)]">
+                  {maxLeftAngle > 0 ? `${maxLeftAngle}°` : '0°'} ({leftPercent}%)
+                </span>
+              </div>
+              <div className="w-full h-5 bg-white rounded-full border-2 border-slate-900 overflow-hidden relative shadow-[inner_1px_1px_2px_rgba(0,0,0,0.3)]">
+                {leftPercent > 0 && (
+                  <div 
+                    className="h-full progress-fill border-r-2 border-slate-900 transition-all duration-500"
+                    style={{ width: `${leftPercent}%` }}
+                  ></div>
+                )}
+              </div>
+            </div>
+
+            {/* Center Splits */}
+            <div className="space-y-1">
+              <div className="flex justify-between items-center text-xs font-mono">
+                <span className="font-black text-indigo-950 flex items-center gap-1">🔽 Center Splits</span>
+                <span className="font-black text-indigo-950 bg-white/60 px-1.5 py-0.5 rounded border border-slate-900/10 shadow-[1px_1px_0px_rgba(0,0,0,0.15)]">
+                  {maxCenterAngle > 0 ? `${maxCenterAngle}°` : '0°'} ({centerPercent}%)
+                </span>
+              </div>
+              <div className="w-full h-5 bg-white rounded-full border-2 border-slate-900 overflow-hidden relative shadow-[inner_1px_1px_2px_rgba(0,0,0,0.3)]">
+                {centerPercent > 0 && (
+                  <div 
+                    className="h-full progress-fill border-r-2 border-slate-900 transition-all duration-500"
+                    style={{ width: `${centerPercent}%` }}
+                  ></div>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="text-xs text-indigo-100 font-medium">
+          <div className="text-xs text-indigo-950 font-bold">
             {!hasPhotos ? (
-              <div className="space-y-1.5 pt-0.5">
-                <p>No stretch photo logged yet to track splits.</p>
+              <div className="space-y-1.5 pt-0.5 animate-pulse">
+                <p className="text-indigo-950">No stretch photo logged yet to track splits.</p>
                 <button 
                   onClick={onNavigateToProgress}
-                  className="inline-flex items-center text-xs font-mono font-black text-yellow-300 hover:text-yellow-400 underline cursor-pointer transition-all"
+                  className="inline-flex items-center text-xs font-mono font-black text-indigo-950 hover:text-indigo-800 underline cursor-pointer transition-all"
                 >
-                  📸 Log first photo & measure angle
+                  📸 Log study photo & measure angles
                   <ArrowRight className="w-3.5 h-3.5 ml-1 inline" />
                 </button>
               </div>
-            ) : angleValue === 180 ? (
-              "Touchdown accomplished! Maintain splits depth with weekly stretch sets."
             ) : (
-              `Estimate: ~${Math.ceil((180 - angleValue) * 1.5)} more sessions until sweet splits touchdown.`
+              <p className="leading-tight text-[11px] font-sans font-bold text-indigo-950">
+                Keep stretching daily! Log webcam snaps to calibrate angles of left, right, or center folds.
+              </p>
             )}
           </div>
         </div>
 
         {/* Total Flexibility Gains Bento Card */}
         <div className="md:col-span-3 bento-card p-6 flex flex-col justify-between bg-white border-2 border-slate-900">
-          <h3 className="font-bold text-slate-500 uppercase text-xs tracking-widest">Total Flexibility</h3>
-          <div className="my-3">
-            <span className="text-5xl font-extrabold text-slate-950 tracking-tight">
-              {hasPhotos ? `+${Math.max(0, maxAngleRecorded - earliestAngle)}°` : '+0°'}
-            </span>
-            <p className="text-xs text-slate-500 mt-1 font-medium">
-              {!hasPhotos 
-                ? 'No tracked progress recorded yet' 
-                : photos.length === 1 
-                  ? `Baseline set at ${earliestAngle}°`
-                  : `Gain from baseline of ${earliestAngle}°`}
-            </p>
+          <h3 className="font-bold text-slate-500 uppercase text-xs tracking-widest text-left">Total Flexibility</h3>
+          
+          <div className="my-3 space-y-3">
+            {/* Left Split */}
+            <div className="flex items-center justify-between border-b border-dashed border-slate-200 pb-2">
+              <span className="text-xs font-mono font-extrabold text-slate-700 flex items-center gap-1">◀️ Left</span>
+              <span className="text-2xl font-black text-slate-950 tracking-tight">
+                {maxLeftAngle > 0 ? `${maxLeftAngle}°` : '0°'}
+              </span>
+            </div>
+
+            {/* Right Split */}
+            <div className="flex items-center justify-between border-b border-dashed border-slate-200 pb-2">
+              <span className="text-xs font-mono font-extrabold text-slate-700 flex items-center gap-1">▶️ Right</span>
+              <span className="text-2xl font-black text-slate-950 tracking-tight">
+                {maxRightAngle > 0 ? `${maxRightAngle}°` : '0°'}
+              </span>
+            </div>
+
+            {/* Center Split */}
+            <div className="flex items-center justify-between pb-1">
+              <span className="text-xs font-mono font-extrabold text-slate-700 flex items-center gap-1">🔽 Center</span>
+              <span className="text-2xl font-black text-slate-950 tracking-tight">
+                {maxCenterAngle > 0 ? `${maxCenterAngle}°` : '0°'}
+              </span>
+            </div>
           </div>
+
           <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] font-mono">
             {!hasPhotos ? (
               <button
@@ -219,8 +316,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </button>
             ) : (
               <>
-                <span className="text-slate-400">Stretches Mode</span>
-                <span className="text-slate-600 font-bold">Beginner</span>
+                <span className="text-slate-400">Peak Angle</span>
+                <span className="text-indigo-600 font-extrabold">{maxAngleRecorded}° Max</span>
               </>
             )}
           </div>
@@ -392,7 +489,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
                 <div className="text-right">
                   <span className="font-mono bg-emerald-100 border border-slate-900/30 text-emerald-800 px-3 py-1 rounded-full font-bold">
-                    +{Math.round(log.durationCompleted / 60)} Mins Complete
+                    +{Math.round(log.durationCompleted / 60)} Mins
                   </span>
                 </div>
               </div>

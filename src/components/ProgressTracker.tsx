@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ProgressPhoto } from '../types';
-import { Camera, Upload, Trash2, Sliders, ChevronLeft, Check, Compass, Info, Calendar } from 'lucide-react';
+import { ProgressPhoto, RoutineLog } from '../types';
+import { Camera, Upload, Trash2, Sliders, ChevronLeft, Check, Compass, Info, Calendar, RotateCw } from 'lucide-react';
 
 interface ProgressTrackerProps {
   photos: ProgressPhoto[];
+  logs: RoutineLog[];
   onSavePhoto: (photo: ProgressPhoto) => void;
   onDeletePhoto: (id: string) => void;
 }
 
 export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
   photos,
+  logs,
   onSavePhoto,
   onDeletePhoto,
 }) => {
@@ -21,6 +23,11 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
   const [notes, setNotes] = useState<string>('');
   const [markers, setMarkers] = useState<{ x: number; y: number }[]>([]);
   const [calculatedAngle, setCalculatedAngle] = useState<number>(180);
+  const [splitType, setSplitType] = useState<'right' | 'left' | 'center'>('center');
+
+  // Webcam facing mode & drag state controls
+  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   // Webcam capture states
   const [showWebcam, setShowWebcam] = useState<boolean>(false);
@@ -31,10 +38,13 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
   const [compareLeftId, setCompareLeftId] = useState<string>('');
   const [compareRightId, setCompareRightId] = useState<string>('');
   const [sliderPosition, setSliderPosition] = useState<number>(50);
+  const [compareSplitFilter, setCompareSplitFilter] = useState<'left' | 'right' | 'center'>('center');
   const compareContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Angle Calculator logic
   const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // If we were just dragging or clicked on a marker directly, ignore
+    if (draggedIndex !== null) return;
     if (markers.length >= 3) return; // Only 3 points needed for angle calculation
 
     const rect = e.currentTarget.getBoundingClientRect();
@@ -45,9 +55,37 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
     setMarkers(updatedMarkers);
   };
 
+  const handleImageMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (draggedIndex === null) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+
+    const updated = [...markers];
+    updated[draggedIndex] = { x, y };
+    setMarkers(updated);
+  };
+
+  const handleImageTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (draggedIndex === null || !e.touches[0]) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((e.touches[0].clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((e.touches[0].clientY - rect.top) / rect.height) * 100));
+
+    const updated = [...markers];
+    updated[draggedIndex] = { x, y };
+    setMarkers(updated);
+  };
+
+  const deleteMarker = (index: number) => {
+    const updated = markers.filter((_, i) => i !== index);
+    setMarkers(updated);
+  };
+
   const handleClearMarkers = () => {
     setMarkers([]);
     setCalculatedAngle(180);
+    setDraggedIndex(null);
   };
 
   // Run angle calculation whenever markers update
@@ -87,7 +125,8 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
       imageDataUrl: newImage,
       notes: notes || 'Feeling flexible!',
       angleValue: markers.length === 3 ? calculatedAngle : 180,
-      markers: markers
+      markers: markers,
+      splitType: splitType
     };
 
     onSavePhoto(newPhoto);
@@ -97,6 +136,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
     setNotes('');
     setMarkers([]);
     setCalculatedAngle(180);
+    setSplitType('center');
     setActiveTab('gallery');
   };
 
@@ -122,18 +162,38 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
   };
 
   // Camera start module
-  const startWebcam = async () => {
+  const startWebcam = async (mode: 'user' | 'environment' = facingMode) => {
     setShowWebcam(true);
     setNewImage(null);
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+    }
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: mode } });
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
     } catch (e) {
-      console.warn("Could not activate camera. Please use file upload instead.", e);
-      setShowWebcam(false);
+      console.warn(`Could not activate camera with facingMode: ${mode}. Retrying default fallback...`, e);
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        streamRef.current = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (err) {
+        console.warn("Could not activate camera.", err);
+        setShowWebcam(false);
+      }
+    }
+  };
+
+  const handleToggleCameraFacing = () => {
+    const nextMode = facingMode === 'user' ? 'environment' : 'user';
+    setFacingMode(nextMode);
+    if (showWebcam) {
+      startWebcam(nextMode);
     }
   };
 
@@ -154,9 +214,11 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
       
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        // Horizontal flip capture because mirror view is comfortable
-        ctx.translate(canvas.width, 0);
-        ctx.scale(-1, 1);
+        if (facingMode === 'user') {
+          // Horizontal flip capture because mirror view of front camera is comfortable
+          ctx.translate(canvas.width, 0);
+          ctx.scale(-1, 1);
+        }
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         
         const dataUrl = canvas.toDataURL('image/jpeg');
@@ -178,17 +240,30 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
     }
   };
 
-  // Sync default comparison items if they exist
+  const filteredComparePhotos = photos.filter(p => {
+    if (compareSplitFilter === 'center') return p.splitType === 'center' || !p.splitType;
+    return p.splitType === compareSplitFilter;
+  });
+
+  // Sync default comparison items if they exist under the current filter
   useEffect(() => {
-    if (photos.length >= 2) {
-      if (!compareLeftId || !compareRightId) {
+    if (filteredComparePhotos.length >= 2) {
+      const isLeftValid = filteredComparePhotos.some(p => p.id === compareLeftId);
+      const isRightValid = filteredComparePhotos.some(p => p.id === compareRightId);
+      if (!isLeftValid || !isRightValid) {
         // Sort chronologically to default left as earliest, right as latest
-        const sorted = [...photos].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        const sorted = [...filteredComparePhotos].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
         setCompareLeftId(sorted[0].id);
         setCompareRightId(sorted[sorted.length - 1].id);
       }
+    } else if (filteredComparePhotos.length === 1) {
+      setCompareLeftId(filteredComparePhotos[0].id);
+      setCompareRightId(filteredComparePhotos[0].id);
+    } else {
+      setCompareLeftId('');
+      setCompareRightId('');
     }
-  }, [photos]);
+  }, [compareSplitFilter, photos]);
 
   // Clean up streaming on unmount
   useEffect(() => {
@@ -198,6 +273,28 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
       }
     };
   }, []);
+
+  // Generate calendar dates for the past 14 days to show on a mini tracker
+  const getPastFortnight = () => {
+    const dates = [];
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const hasCompleted = logs.some(l => l.date === dateStr && l.completed);
+      dates.push({
+        dateStr,
+        dayLabel: d.toLocaleDateString('en-US', { weekday: 'narrow' }),
+        dayNum: d.getDate(),
+        isToday: d.toISOString().split('T')[0] === new Date().toISOString().split('T')[0],
+        hasCompleted
+      });
+    }
+    return dates;
+  };
+
+  const fortnight = getPastFortnight();
+  const completedRoutinesGroup = logs.slice(0, 5);
 
   const leftPhotoCompare = photos.find(p => p.id === compareLeftId);
   const rightPhotoCompare = photos.find(p => p.id === compareRightId);
@@ -281,6 +378,11 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                         {item.angleValue}° Split
                       </div>
                     )}
+
+                    {/* Split type flavor overlay with human/emoji elements */}
+                    <div className="absolute top-3 left-3 bg-slate-900/95 text-yellow-300 border-2 border-slate-900 px-2.5 py-1 rounded-xl font-mono text-[10px] font-black uppercase shadow-[2px_2px_0px_#1E293B] flex items-center gap-1 z-10">
+                      {item.splitType === 'left' ? '◀️ Left Split' : item.splitType === 'right' ? '▶️ Right Split' : '🔽 Center Split'}
+                    </div>
                   </div>
 
                   {/* Body text info */}
@@ -371,13 +473,24 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
           ) : showWebcam ? (
             /* ACTIVE CAMERA STREAM AREA */
             <div className="relative rounded-2xl overflow-hidden bg-black aspect-video border-4 border-slate-900 shadow-[4px_4px_0px_#1e293b]">
+              {/* Floating Camera Facing Toggle Overlay */}
+              <button
+                type="button"
+                onClick={handleToggleCameraFacing}
+                className="absolute top-3 right-3 bg-white hover:bg-yellow-100 text-slate-950 border-2 border-slate-900 font-mono text-[9px] font-black px-2.5 py-1.5 rounded-xl shadow-[1.5px_1.5px_0px_#1E293B] cursor-pointer flex items-center gap-1 z-10 transition-colors"
+                title="Toggle Front / Back Camera"
+              >
+                <RotateCw className="w-3 h-3 text-slate-950" />
+                {facingMode === 'user' ? 'BACK CAMERA' : 'FRONT CAMERA'}
+              </button>
+
               <video 
                 ref={videoRef} 
                 autoPlay 
                 playsInline 
-                className="w-full h-full object-cover scale-x-[-1]" 
+                className={`w-full h-full object-cover ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`} 
               />
-              <div className="absolute bottom-4 left-0 right-0 flex items-center justify-center gap-3">
+              <div className="absolute bottom-4 left-0 right-0 flex items-center justify-center gap-3 z-10">
                 <button
                   type="button"
                   onClick={stopWebcam}
@@ -413,12 +526,17 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
               {/* Photo viewport container for registering markers */}
               <div 
                 onClick={handleImageClick}
-                className="relative aspect-video rounded-2xl overflow-hidden bg-slate-950 group cursor-crosshair select-none border-4 border-slate-900 shadow-[4px_4px_0px_#1e293b]"
+                onMouseMove={handleImageMouseMove}
+                onTouchMove={handleImageTouchMove}
+                onMouseUp={() => setDraggedIndex(null)}
+                onTouchEnd={() => setDraggedIndex(null)}
+                onMouseLeave={() => setDraggedIndex(null)}
+                className="relative aspect-video rounded-2xl overflow-hidden bg-slate-950 group/img cursor-crosshair select-none border-4 border-slate-900 shadow-[4px_4px_0px_#1e293b]"
               >
                 <img 
                   src={newImage} 
                   alt="Review source" 
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain pointer-events-none"
                   referrerPolicy="no-referrer"
                 />
 
@@ -459,14 +577,39 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                   )}
                 </svg>
 
-                {/* Markers visual indicators - Yellow button styled with pulse */}
+                {/* Markers visual indicators - Draggable and Deletable */}
                 {markers.map((pt, i) => (
                   <div
                     key={i}
-                    className="absolute w-6 h-6 -ml-3 -mt-3 rounded-full bg-yellow-400 border-2 border-slate-900 flex items-center justify-center text-[10px] font-mono font-black text-slate-900 marker-pulse shadow-[1px_1px_0px_#1E293B]"
+                    className={`absolute w-8 h-8 -ml-4 -mt-4 rounded-full bg-yellow-400 border-2 border-slate-900 flex items-center justify-center text-[11px] font-mono font-black text-slate-900 shadow-[2px_2px_0px_#1E293B] z-20 transition-transform ${draggedIndex === i ? 'cursor-grabbing scale-125 bg-yellow-300' : 'cursor-grab hover:scale-110'} group/dot`}
                     style={{ left: `${pt.x}%`, top: `${pt.y}%` }}
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                      setDraggedIndex(i);
+                    }}
+                    onTouchStart={(e) => {
+                      e.stopPropagation();
+                      setDraggedIndex(i);
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    title="Drag to Adjust Position!"
                   >
                     {i + 1}
+                    
+                    {/* Tiny inline custom delete indicator button */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteMarker(i);
+                      }}
+                      className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-red-500 hover:bg-red-600 text-white border border-slate-900 flex items-center justify-center text-[9px] font-bold shadow-sm cursor-pointer opacity-80 hover:opacity-100 transition-opacity z-30"
+                      title="Remove Point"
+                    >
+                      ×
+                    </button>
                   </div>
                 ))}
 
@@ -486,6 +629,40 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                 )}
               </div>
 
+              {/* Joint Dots Info & Edit Row */}
+              {markers.length > 0 && (
+                <div className="p-3.5 bg-slate-50 border-2 border-slate-900 rounded-xl space-y-2">
+                  <p className="text-[10px] font-mono font-black text-slate-505 uppercase tracking-wide flex items-center justify-between">
+                    <span>📍 Calibrated Joints</span>
+                    <span className="text-[9px] text-slate-400 font-normal">Click & Drag any point directly on the image to adjust</span>
+                  </p>
+                  <div className="flex flex-wrap gap-2 text-[11px]">
+                    {markers.map((pt, i) => {
+                      const labels = ["Left Foot / Knee", "Pelvis / Hip center", "Right Foot / Knee"];
+                      return (
+                        <div key={i} className="flex items-center gap-1.5 bg-white border-2 border-slate-900 px-3 py-1.5 rounded-xl font-bold shadow-[1px_1px_0px_#1E293B]">
+                          <span className="w-4 h-4 rounded-full bg-yellow-300 text-slate-950 font-mono text-[9px] font-black flex items-center justify-center border border-slate-900">
+                            {i + 1}
+                          </span>
+                          <span className="text-slate-800">{labels[i]}</span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteMarker(i);
+                            }}
+                            className="text-red-500 hover:text-red-700 font-black ml-1.5 px-1 hover:bg-red-50 text-xs cursor-pointer transition-all"
+                            title="Delete joint"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* Controls below drawing area */}
               <div className="flex items-center justify-between">
                 <button
@@ -502,6 +679,28 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
 
               {/* Progress photo details inputs fields */}
               <div className="space-y-4 pt-4 border-t border-slate-100">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-mono uppercase font-black text-slate-600 block">Which split is this photo showing?</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(['left', 'right', 'center'] as const).map((type) => (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => setSplitType(type)}
+                        className={`py-2 px-3 rounded-xl border-2 text-center text-xs font-mono font-black uppercase transition-all cursor-pointer ${
+                          splitType === type
+                            ? 'bg-yellow-300 text-slate-900 border-slate-900 shadow-[2px_2px_0px_#1e293b]'
+                            : 'bg-white text-slate-550 border-slate-200 hover:border-slate-450 hover:bg-slate-50'
+                        }`}
+                      >
+                        {type === 'left' && 'Left Split ◀️'}
+                        {type === 'right' && 'Right Split ▶️'}
+                        {type === 'center' && 'Center Split 🔽'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-mono uppercase font-black text-slate-600 block">How did this stretch feel?</label>
                   <input
@@ -543,35 +742,67 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
             </div>
           </div>
 
-          {/* Slices Selectors to populate Left/Right comparison */}
-          <div className="grid grid-cols-2 gap-4 bg-[#FEFCE8] p-4 rounded-2xl border-2 border-slate-900 shadow-[2px_2px_0px_#1E293B]">
-            <div className="space-y-1.5">
-              <label className="text-[9px] font-mono uppercase text-slate-500 block font-black">Left Image (Before)</label>
-              <select
-                value={compareLeftId}
-                onChange={(e) => setCompareLeftId(e.target.value)}
-                className="w-full bg-white border-2 border-slate-900 rounded-xl text-xs py-2 px-2.5 outline-none font-sans font-bold cursor-pointer"
-              >
-                {photos.map(p => (
-                  <option key={p.id} value={p.id}>{p.date} - Angle: {p.angleValue}°</option>
-                ))}
-              </select>
-            </div>
-            
-            <div className="space-y-1.5">
-              <label className="text-[9px] font-mono uppercase text-slate-500 block font-black">Right Image (After)</label>
-              <select
-                value={compareRightId}
-                onChange={(e) => setCompareRightId(e.target.value)}
-                className="w-full bg-white border-2 border-slate-900 rounded-xl text-xs py-2 px-2.5 outline-none font-sans font-bold cursor-pointer"
-              >
-                {/* Reversed for easy selection */}
-                {[...photos].reverse().map(p => (
-                  <option key={p.id} value={p.id}>{p.date} - Angle: {p.angleValue}°</option>
-                ))}
-              </select>
+          {/* Option to choose which split to compare */}
+          <div className="space-y-1.5 p-3.5 bg-indigo-50 border-2 border-slate-900 rounded-2xl shadow-[2px_2px_0px_#1E293B]">
+            <label className="text-[10px] font-mono text-indigo-950 block font-black uppercase">SPLIT TYPE TO COMPARE</label>
+            <div className="grid grid-cols-3 gap-2">
+              {([
+                { id: 'left', label: 'Left ◀️' },
+                { id: 'right', label: 'Right ▶️' },
+                { id: 'center', label: 'Center 🔽' }
+              ] as const).map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setCompareSplitFilter(item.id)}
+                  className={`py-1.5 px-2 bg-white rounded-xl border-2 text-center text-xs font-mono font-black uppercase transition-all cursor-pointer ${
+                    compareSplitFilter === item.id
+                      ? 'bg-yellow-300 text-slate-1000 border-slate-900 shadow-[2px_2px_0px_#1e293b]'
+                      : 'text-slate-600 border-slate-200 hover:border-slate-450 hover:bg-slate-50'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
             </div>
           </div>
+
+          {/* Slices Selectors to populate Left/Right comparison */}
+          {filteredComparePhotos.length >= 1 ? (
+            <div className="grid grid-cols-2 gap-4 bg-[#FEFCE8] p-4 rounded-2xl border-2 border-slate-900 shadow-[2px_2px_0px_#1E293B]">
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-mono uppercase text-slate-500 block font-black">Left Image (Before)</label>
+                <select
+                  value={compareLeftId}
+                  onChange={(e) => setCompareLeftId(e.target.value)}
+                  className="w-full bg-white border-2 border-slate-900 rounded-xl text-xs py-2 px-2.5 outline-none font-sans font-bold cursor-pointer"
+                >
+                  {filteredComparePhotos.map(p => (
+                    <option key={p.id} value={p.id}>{p.date} - Angle: {p.angleValue}° ({p.splitType === 'left' ? '◀️ Left' : p.splitType === 'right' ? '▶️ Right' : '🔽 Center'})</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-mono uppercase text-slate-500 block font-black">Right Image (After)</label>
+                <select
+                  value={compareRightId}
+                  onChange={(e) => setCompareRightId(e.target.value)}
+                  className="w-full bg-white border-2 border-slate-900 rounded-xl text-xs py-2 px-2.5 outline-none font-sans font-bold cursor-pointer"
+                >
+                  {/* Reversed for easy selection */}
+                  {[...filteredComparePhotos].reverse().map(p => (
+                    <option key={p.id} value={p.id}>{p.date} - Angle: {p.angleValue}° ({p.splitType === 'left' ? '◀️ Left' : p.splitType === 'right' ? '▶️ Right' : '🔽 Center'})</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center p-6 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+              <p className="text-xs text-slate-500 font-extrabold font-sans">No photos logged yet for {compareSplitFilter === 'left' ? 'Left Splits ◀️' : compareSplitFilter === 'right' ? 'Right Splits ▶️' : 'Center Splits 🔽'}.</p>
+              <p className="text-[10px] text-slate-400 font-semibold mt-1">Select another filter or add more progress snaps in the "New Progress" tab.</p>
+            </div>
+          )}
 
           {/* LARGE SLIDER INTERACTIVE CONTAINER */}
           {leftPhotoCompare && rightPhotoCompare ? (
@@ -591,8 +822,8 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                     referrerPolicy="no-referrer"
                   />
                   {/* Informative text stamp for Right */}
-                  <div className="absolute bottom-3 right-3 bg-slate-950 text-yellow-300 border-2 border-slate-900 px-3 py-1.5 rounded-xl text-[10px] font-mono font-black shadow-[2px_2px_0px_#1E293B]">
-                    ✅ {rightPhotoCompare.date} ({rightPhotoCompare.angleValue}° Split)
+                  <div className="absolute bottom-3 right-3 bg-slate-950/95 text-yellow-350 border-2 border-slate-900 px-3 py-1.5 rounded-xl text-[10px] font-mono font-black shadow-[2px_2px_0px_#1E293B] flex items-center gap-1">
+                    {rightPhotoCompare.splitType === 'left' ? '◀️ Left' : rightPhotoCompare.splitType === 'right' ? '▶️ Right' : '🔽 Center'} Splits • {rightPhotoCompare.date} ({rightPhotoCompare.angleValue}° Split)
                   </div>
                 </div>
 
@@ -612,8 +843,8 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                     referrerPolicy="no-referrer"
                   />
                   {/* Informative text stamp for Left */}
-                  <div className="absolute bottom-3 left-3 bg-slate-950 text-slate-100 border-2 border-slate-900 px-3 py-1.5 rounded-xl text-[10px] font-mono whitespace-nowrap shadow-[2px_2px_0px_#1E293B]">
-                    🌱 {leftPhotoCompare.date} ({leftPhotoCompare.angleValue}° Split)
+                  <div className="absolute bottom-3 left-3 bg-slate-950/95 text-slate-100 border-2 border-slate-900 px-3 py-1.5 rounded-xl text-[10px] font-mono whitespace-nowrap shadow-[2px_2px_0px_#1E293B] flex items-center gap-1">
+                    {leftPhotoCompare.splitType === 'left' ? '◀️ Left' : leftPhotoCompare.splitType === 'right' ? '▶️ Right' : '🔽 Center'} Splits • {leftPhotoCompare.date} ({leftPhotoCompare.angleValue}° Split)
                   </div>
                 </div>
 
@@ -642,8 +873,13 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                   <p className="text-sm font-sans font-black text-slate-900 leading-none">
                     Pelvis Improvement Angle: +{Math.max(0, rightPhotoCompare.angleValue - leftPhotoCompare.angleValue)}° Closer to Split touchdown!
                   </p>
-                  <p className="text-[10px] text-slate-700 font-bold leading-relaxed mt-2">
-                    Your hips have widened from {leftPhotoCompare.angleValue}° on {leftPhotoCompare.date} to {rightPhotoCompare.angleValue}° on {rightPhotoCompare.date}. Keep up the delicious daily stretches!
+                  <p className="text-[10px] text-slate-700 font-bold leading-relaxed mt-2 flex flex-col gap-1 items-center justify-center">
+                    <span>
+                      Type: <b className="font-mono uppercase text-emerald-900 bg-white border border-emerald-900/20 px-1.5 py-0.5 rounded text-[9px]">{leftPhotoCompare.splitType === 'left' ? '◀️ Left' : leftPhotoCompare.splitType === 'right' ? '▶️ Right' : '🔽 Center'}</b>
+                    </span>
+                    <span>
+                      Your hips have widened from {leftPhotoCompare.angleValue}° on {leftPhotoCompare.date} to {rightPhotoCompare.angleValue}° on {rightPhotoCompare.date}. Keep up the delicious daily stretches!
+                    </span>
                   </p>
                 </div>
               )}
@@ -655,6 +891,88 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
           )}
         </div>
       )}
+
+      {/* Dynamic Stretch Calendar and Activity Logs boxes added per user request */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pt-6 border-t font-sans border-slate-200">
+        
+        {/* Progress Calendar */}
+        <div className="md:col-span-7 bento-card bg-white border-2 border-slate-900 p-6 shadow-[4px_4px_0px_#1e293b]">
+          <div className="flex items-center gap-3 pb-3 border-b-2 border-slate-100 mb-5">
+            <div className="p-2 bg-yellow-100 border-2 border-slate-900 rounded-xl text-slate-900 shadow-[2px_2px_0px_#1e293b]">
+              <Calendar className="w-5 h-5 text-yellow-605" />
+            </div>
+            <div>
+              <h3 className="text-base font-sans font-extrabold text-slate-900 text-left">Banana Peel Stretch Calendar</h3>
+              <p className="text-xs text-slate-500 font-semibold text-left">Your daily workout log for the past two weeks.</p>
+            </div>
+          </div>
+
+          {/* 14 Day grid cells */}
+          <div className="grid grid-cols-7 sm:grid-cols-14 gap-2.5">
+            {fortnight.map((day, idx) => (
+              <div 
+                key={idx}
+                className={`flex flex-col items-center justify-center p-2 rounded-xl border-2 transition-transform ${
+                  day.isToday 
+                    ? 'border-slate-900 bg-yellow-100/80 shadow-[2px_2px_0px_#1E293B]' 
+                    : day.hasCompleted
+                      ? 'border-slate-900 bg-yellow-300 shadow-[1px_1px_0px_#1E293B]'
+                      : 'border-slate-200 bg-slate-50/50'
+                }`}
+              >
+                <span className={`text-[9px] font-mono uppercase font-black ${
+                  day.isToday ? 'text-slate-950' : 'text-gray-400'
+                }`}>
+                  {day.dayLabel}
+                </span>
+                <span className={`text-xs font-sans font-extrabold my-1 ${
+                  day.isToday ? 'text-slate-950 font-black' : 'text-slate-700'
+                }`}>
+                  {day.dayNum}
+                </span>
+                {day.hasCompleted ? (
+                  <span className="text-sm select-none" title="Completed stretching!">🍌</span>
+                ) : (
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-200" title="Not stretched yet"></span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Recent History logs list */}
+        <div className="md:col-span-5 bento-card bg-white border-2 border-slate-900 p-6 shadow-[4px_4px_0px_#1e293b] flex flex-col justify-between">
+          <div>
+            <h3 className="text-base font-sans font-extrabold text-slate-900 mb-4 pb-2 border-b border-slate-100 text-left">Recent Activity Logs</h3>
+            {completedRoutinesGroup.length > 0 ? (
+              <div className="divide-y divide-slate-100">
+                {completedRoutinesGroup.map((log) => (
+                  <div key={log.id} className="py-3 flex items-center justify-between gap-4 text-xs">
+                    <div className="flex items-center gap-3">
+                      <span className="text-base bg-amber-100 border border-slate-900/40 p-1.5 rounded-xl shadow-[1px_1px_0px_#1E293B] shrink-0">🍌</span>
+                      <div className="text-left">
+                        <p className="font-extrabold text-slate-800 line-clamp-1">{log.routineName}</p>
+                        <p className="text-[10px] text-slate-400 font-semibold">{log.date}</p>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="font-mono bg-emerald-100 border border-slate-900/30 text-emerald-800 px-2.5 py-1 rounded-full font-bold">
+                        +{Math.round(log.durationCompleted / 60)}m
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-8 text-center text-xs text-slate-400 font-semibold space-y-2">
+                <p>No stretching logs found yet.</p>
+                <p className="text-[10px] font-medium max-w-xs mx-auto text-slate-400 leading-relaxed">Complete a banana split session on the workouts page to start logging your progress here.</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+      </div>
 
     </div>
   );

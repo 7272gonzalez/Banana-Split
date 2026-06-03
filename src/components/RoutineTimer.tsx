@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Routine, Stretch } from '../types';
 import { StretchIllustration } from './StretchIllustration';
-import { Play, Pause, SkipForward, ChevronLeft, Volume2, Award, CheckCircle2, RefreshCw, Star } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, ChevronLeft, Volume2, Award, CheckCircle2, RefreshCw, Star } from 'lucide-react';
 
 interface RoutineTimerProps {
   routine: Routine;
@@ -141,6 +141,19 @@ export const RoutineTimer: React.FC<RoutineTimerProps> = ({
     } else {
       setIsFinished(true);
       playFinishedChime();
+    }
+  };
+
+  const handlePrev = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setIsPlaying(false);
+
+    if (currentStepIdx > 0) {
+      setCurrentStepIdx((prev) => {
+        const prevIdx = prev - 1;
+        setTimeLeft(routine.stretches[prevIdx].duration);
+        return prevIdx;
+      });
     }
   };
 
@@ -341,6 +354,20 @@ export const RoutineTimer: React.FC<RoutineTimerProps> = ({
               title="Reset timer"
             >
               <RefreshCw className="w-4 h-4" />
+            </button>
+
+            {/* Back to previous pose */}
+            <button
+              onClick={handlePrev}
+              disabled={currentStepIdx === 0}
+              className={`p-3.5 border-2 border-slate-900 rounded-2xl transition-all shadow-[2px_2px_0px_#1E293B] active:translate-y-0.5 active:shadow-[1px_1px_0px_#1E293B] ${
+                currentStepIdx === 0 
+                  ? 'bg-slate-100 text-slate-350 border-slate-300 shadow-none cursor-not-allowed opacity-50' 
+                  : 'text-slate-900 hover:bg-slate-100 bg-white cursor-pointer'
+              }`}
+              title="Go back to previous pose"
+            >
+              <SkipBack className="w-4 h-4" />
             </button>
 
             {/* Main Play/Pause */}

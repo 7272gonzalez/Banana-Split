@@ -179,6 +179,7 @@ export default function App() {
         ) : (
           <ProgressTracker 
             photos={photos}
+            logs={logs}
             onSavePhoto={handleSaveProgressPhoto}
             onDeletePhoto={handleDeletePhoto}
           />
