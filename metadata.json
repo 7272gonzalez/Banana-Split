@@ -1,0 +1,6 @@
+{
+  "name": "Banana Split",
+  "description": "A beginner's guide to achieving the splits with daily custom stretching routines and photo progress tracking.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
