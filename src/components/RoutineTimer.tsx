@@ -24,12 +24,31 @@ export const RoutineTimer: React.FC<RoutineTimerProps> = ({
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const totalDurationRef = useRef<number>(0);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  // Lazy initialize or resume the unified AudioContext
+  const getAudioContext = (): AudioContext | null => {
+    if (typeof window === 'undefined') return null;
+    try {
+      if (!audioCtxRef.current) {
+        audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+      if (audioCtxRef.current.state === 'suspended') {
+        audioCtxRef.current.resume();
+      }
+      return audioCtxRef.current;
+    } catch (e) {
+      console.warn('Failed to initialize AudioContext:', e);
+      return null;
+    }
+  };
 
   // Beep sound synthesizer using Web Audio API
   const playSynthesisBeep = (freq: number, type: OscillatorType = 'sine', dur = 0.1) => {
     if (!soundEnabled) return;
     try {
-      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const audioCtx = getAudioContext();
+      if (!audioCtx) return;
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
 
@@ -49,22 +68,135 @@ export const RoutineTimer: React.FC<RoutineTimerProps> = ({
     }
   };
 
-  // Trigger sound alerts
-  const playStepCompleteChime = () => {
-    playSynthesisBeep(523.25, 'sine', 0.15); // C5
-    setTimeout(() => {
-      playSynthesisBeep(659.25, 'sine', 0.15); // E5
-    }, 120);
-    setTimeout(() => {
-      playSynthesisBeep(783.99, 'sine', 0.3); // G5
-    }, 240);
+  // Crisp tick sound for 5-second markers
+  const playTickSound = () => {
+    if (!soundEnabled) return;
+    try {
+      const audioCtx = getAudioContext();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.type = 'triangle'; // softer click sound than sine/square
+      osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+
+      gain.gain.setValueAtTime(0.04, audioCtx.currentTime); // Gentle comfortable volume
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.04);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.04);
+    } catch (e) {
+      console.warn('Click synthesis ignored', e);
+    }
   };
 
+  // Trigger happy ringing bell sound when each step successfully completes
+  const playStepCompleteChime = () => {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      
+      // Voice 1 - Fundamental frequency (C6)
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(1046.50, now);
+      gain1.gain.setValueAtTime(0.07, now);
+      gain1.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(now);
+      osc1.stop(now + 1.25);
+
+      // Voice 2 - Harmonic major third overtone (E6) starting with a slight delay
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(1318.51, now + 0.05);
+      gain2.gain.setValueAtTime(0, now);
+      gain2.gain.setValueAtTime(0.05, now + 0.05);
+      gain2.gain.exponentialRampToValueAtTime(0.0001, now + 1.0);
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(now + 0.05);
+      osc2.stop(now + 1.05);
+
+      // Voice 3 - Perfect fifth overtone (G6)
+      const osc3 = ctx.createOscillator();
+      const gain3 = ctx.createGain();
+      osc3.type = 'sine';
+      osc3.frequency.setValueAtTime(1567.98, now + 0.1);
+      gain3.gain.setValueAtTime(0, now);
+      gain3.gain.setValueAtTime(0.03, now + 0.1);
+      gain3.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
+      osc3.connect(gain3);
+      gain3.connect(ctx.destination);
+      osc3.start(now + 0.1);
+      osc3.stop(now + 0.85);
+    } catch (e) {
+      console.warn('Step completion chime ignored', e);
+    }
+  };
+
+  // Triumphant major arpeggio fanfare chord progression when the entire routine finishes
   const playFinishedChime = () => {
-    playSynthesisBeep(523.25, 'sine', 0.2); // C5
-    setTimeout(() => playSynthesisBeep(659.25, 'sine', 0.2), 150);
-    setTimeout(() => playSynthesisBeep(783.99, 'sine', 0.2), 300);
-    setTimeout(() => playSynthesisBeep(1046.50, 'sine', 0.5), 450); // C6
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      // Ascending C major progression C5 (523Hz) -> E5 (659Hz) -> G5 (784Hz) -> C6 (1046Hz) -> E6 (1318Hz)
+      const notes = [
+        { freq: 523.25, offset: 0, dur: 0.6, vol: 0.06 },   // C5
+        { freq: 659.25, offset: 0.12, dur: 0.6, vol: 0.06 },  // E5
+        { freq: 783.99, offset: 0.24, dur: 0.6, vol: 0.06 },  // G5
+        { freq: 1046.50, offset: 0.36, dur: 1.5, vol: 0.08 }, // C6 (long hold)
+        { freq: 1318.51, offset: 0.48, dur: 1.5, vol: 0.05 }, // E6 (harmonic shimmer)
+      ];
+
+      notes.forEach((note) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle'; // Warm friendly retro brass feel
+        osc.frequency.setValueAtTime(note.freq, now + note.offset);
+        
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.setValueAtTime(0, now + note.offset);
+        gain.gain.linearRampToValueAtTime(note.vol, now + note.offset + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + note.offset + note.dur);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + note.offset);
+        osc.stop(now + note.offset + note.dur + 0.05);
+      });
+
+      // Warm background drone for fullness (C4 + G4)
+      const lowNotes = [261.63, 392.00];
+      lowNotes.forEach((freq) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + 0.3);
+        
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.04, now + 0.35);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + 0.3);
+        osc.stop(now + 1.85);
+      });
+    } catch (e) {
+      console.warn('Finished chime ignored', e);
+    }
   };
 
   // Safe timer control effect
@@ -75,9 +207,14 @@ export const RoutineTimer: React.FC<RoutineTimerProps> = ({
           const next = prev - 1;
           totalDurationRef.current += 1;
 
-          // Sound warnings on last 3 seconds
+          // Sound tick every 5 seconds (only when active, and next is a multiple of 5)
+          if (next > 0 && next % 5 === 0) {
+            playTickSound();
+          }
+
+          // Sound warm alert tick warning on last 3/2/1 seconds
           if (next > 0 && next <= 3) {
-            playSynthesisBeep(440, 'triangle', 0.08); // simple soft warning ticks (A4)
+            playSynthesisBeep(440, 'triangle', 0.08); // soft timer ticks (A4)
           }
 
           if (next === 0) {
@@ -100,16 +237,16 @@ export const RoutineTimer: React.FC<RoutineTimerProps> = ({
     playStepCompleteChime();
 
     if (currentStepIdx < routine.stretches.length - 1) {
-      // Move to next step with brief delay
+      // Move to the next step but pause and do not auto-play.
+      // We do it after a brief delay so they see the final timer state.
       setTimeout(() => {
         setCurrentStepIdx((prev) => {
           const nextIdx = prev + 1;
           setTimeLeft(routine.stretches[nextIdx].duration);
-          // Auto-start next step so user doesn't have to touch Screen
-          setIsPlaying(true);
+          setIsPlaying(false); // Do not auto-play! Pause and require user action
           return nextIdx;
         });
-      }, 800);
+      }, 1000);
     } else {
       // All exercises finished!
       setIsFinished(true);
@@ -118,13 +255,8 @@ export const RoutineTimer: React.FC<RoutineTimerProps> = ({
   };
 
   const handleTogglePlay = () => {
-    // Resume context if suspended (browser behavior)
-    try {
-      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    } catch (_) {}
+    // Register action and resume browser audio constraints
+    getAudioContext();
     setIsPlaying(!isPlaying);
   };
 
