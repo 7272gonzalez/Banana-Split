@@ -548,8 +548,8 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                       y1={`${markers[0].y}%`} 
                       x2={`${markers[1].x}%`} 
                       y2={`${markers[1].y}%`} 
-                      stroke="#facc15" 
-                      strokeWidth="4" 
+                      stroke="#fbbf24" 
+                      strokeWidth="2" 
                       strokeLinecap="round"
                     />
                   )}
@@ -560,18 +560,18 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                         y1={`${markers[1].y}%`} 
                         x2={`${markers[2].x}%`} 
                         y2={`${markers[2].y}%`} 
-                        stroke="#facc15" 
-                        strokeWidth="4" 
+                        stroke="#fbbf24" 
+                        strokeWidth="2" 
                         strokeLinecap="round"
                       />
                       {/* Semi-transparent angular visual sector fan */}
                       <circle 
                         cx={`${markers[1].x}%`} 
                         cy={`${markers[1].y}%`} 
-                        r="35" 
-                        fill="rgba(250, 204, 21, 0.3)" 
+                        r="20" 
+                        fill="rgba(250, 204, 21, 0.25)" 
                         stroke="#ffffff" 
-                        strokeWidth="1.5"
+                        strokeWidth="1"
                       />
                     </>
                   )}
@@ -581,7 +581,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                 {markers.map((pt, i) => (
                   <div
                     key={i}
-                    className={`absolute w-8 h-8 -ml-4 -mt-4 rounded-full bg-yellow-400 border-2 border-slate-900 flex items-center justify-center text-[11px] font-mono font-black text-slate-900 shadow-[2px_2px_0px_#1E293B] z-20 transition-transform ${draggedIndex === i ? 'cursor-grabbing scale-125 bg-yellow-300' : 'cursor-grab hover:scale-110'} group/dot`}
+                    className={`absolute w-5 h-5 -ml-2.5 -mt-2.5 rounded-full bg-yellow-400 border-2 border-slate-900 flex items-center justify-center text-[10px] font-mono font-black text-slate-900 shadow-[1.5px_1.5px_0px_#1E293B] z-20 transition-transform ${draggedIndex === i ? 'cursor-grabbing scale-125 bg-yellow-300' : 'cursor-grab hover:scale-110'} group/dot`}
                     style={{ left: `${pt.x}%`, top: `${pt.y}%` }}
                     onMouseDown={(e) => {
                       e.stopPropagation();
@@ -605,7 +605,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                         e.stopPropagation();
                         deleteMarker(i);
                       }}
-                      className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-red-500 hover:bg-red-600 text-white border border-slate-900 flex items-center justify-center text-[9px] font-bold shadow-sm cursor-pointer opacity-80 hover:opacity-100 transition-opacity z-30"
+                      className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 text-white border border-slate-900 flex items-center justify-center text-[8px] font-bold shadow-sm cursor-pointer opacity-80 hover:opacity-100 transition-opacity z-30"
                       title="Remove Point"
                     >
                       ×

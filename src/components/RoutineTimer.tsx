@@ -364,13 +364,22 @@ export const RoutineTimer: React.FC<RoutineTimerProps> = ({
           </ul>
         </div>
 
-        <button
-          onClick={handleFinalSubmit}
-          className="w-full bento-btn bg-yellow-400 hover:bg-yellow-500 text-slate-950 font-black font-mono py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 text-xs cursor-pointer"
-        >
-          <CheckCircle2 className="w-4 h-4" />
-          SAVE LOG & UPDATE STREAK
-        </button>
+        <div className="flex flex-col gap-2.5 w-full">
+          <button
+            onClick={handleFinalSubmit}
+            className="w-full bento-btn bg-yellow-400 hover:bg-yellow-500 text-slate-950 font-black font-mono py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 text-xs cursor-pointer"
+          >
+            <CheckCircle2 className="w-4 h-4" />
+            SAVE LOG & UPDATE STREAK
+          </button>
+
+          <button
+            onClick={onClose}
+            className="w-full bento-btn bg-white hover:bg-slate-100 text-slate-700 border-2 border-slate-900 font-extrabold font-mono py-3 px-6 rounded-xl flex items-center justify-center gap-2 text-xs cursor-pointer transition-all"
+          >
+            DISCARD & RETURN TO MAIN PAGE
+          </button>
+        </div>
       </div>
     );
   }
