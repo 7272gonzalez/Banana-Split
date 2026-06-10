@@ -9,6 +9,7 @@ interface DashboardProps {
   photos: ProgressPhoto[];
   onSelectRoutine: (routine: Routine) => void;
   onNavigateToProgress: () => void;
+  onNavigateToInstructions: () => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
@@ -16,7 +17,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
   logs,
   photos,
   onSelectRoutine,
-  onNavigateToProgress
+  onNavigateToProgress,
+  onNavigateToInstructions
 }) => {
   // Let's figure out which badge is unlocked based on total logs or streak
   const getRipenessBadge = (streak: number, total: number) => {
@@ -153,8 +155,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
         
         {/* Quick badge stats info */}
-        <div className="flex gap-3 shrink-0">
-          <div className="px-5 py-3 bento-card bg-white font-bold text-slate-950 text-xs font-mono uppercase shadow-[2px_2px_0px_#1e293b]">
+        <div className="flex flex-col sm:flex-row gap-3 shrink-0 items-stretch sm:items-center w-full sm:w-auto">
+          <div className="px-5 py-3 bento-card bg-white font-mono text-slate-950 text-xs font-bold uppercase shadow-[2px_2px_0px_#1e293b] text-center">
             Level: Flexible Rookie
           </div>
           <button 
@@ -163,9 +165,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
               const el = document.getElementById('stretches-flavor');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="px-5 py-3 bento-btn bg-yellow-400 font-bold text-slate-900 text-xs uppercase cursor-pointer"
+            className="min-h-[44px] flex items-center justify-center px-5 py-3 bento-btn bg-yellow-400 font-sans font-bold text-slate-900 text-xs uppercase cursor-pointer active:translate-y-0.5 transition-all w-full sm:w-auto"
           >
             Start Routine
+          </button>
+          
+          {/* Question mark help button */}
+          <button
+            id="dash-instructions-btn"
+            onClick={onNavigateToInstructions}
+            title="How to Use App"
+            className="w-11 h-11 rounded-2xl border-2 border-slate-900 bg-white hover:bg-yellow-105 text-slate-900 flex items-center justify-center shadow-[3px_3px_0px_#1e293b] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#1e293b] text-lg font-black cursor-pointer shrink-0 transition-all self-center sm:self-auto"
+          >
+            ?
           </button>
         </div>
       </div>
@@ -405,7 +417,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {/* Action play strip */}
               <button
                 onClick={() => onSelectRoutine(routine)}
-                className="w-full bg-[#FEFCE8] hover:bg-yellow-400 text-slate-900 font-bold text-xs font-mono py-3.5 px-4 flex items-center justify-center gap-2 transition-colors border-t-2 border-slate-900 cursor-pointer"
+                className="w-full min-h-[44px] bg-[#FEFCE8] hover:bg-yellow-400 text-slate-900 font-sans font-bold text-xs py-3.5 px-4 flex items-center justify-center gap-2 transition-colors border-t-2 border-slate-900 cursor-pointer"
               >
                 <Play className="w-3.5 h-3.5 fill-slate-900" />
                 START TARGET ROUTINE
@@ -415,8 +427,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
           ))}
         </div>
       </div>
-
-      {/* Progress Calendar */}
       <div className="bento-card bg-white border-2 border-slate-900 p-6 shadow-[4px_4px_0px_#1e293b]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-slate-100 mb-5">
           <div className="flex items-center gap-3">
@@ -430,21 +440,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
           <button 
             onClick={onNavigateToProgress}
-            className="text-xs font-mono font-bold text-slate-900 bg-yellow-300 hover:bg-yellow-400 border-2 border-slate-900 px-4 py-2 rounded-xl transition-all shadow-[2px_2px_0px_#1e293b] active:translate-y-0.5 active:shadow-[1px_1px_0px_#1e293b] flex items-center gap-1.5 cursor-pointer shrink-0"
+            className="min-h-[44px] flex items-center justify-center gap-1.5 text-xs font-mono font-bold text-slate-900 bg-yellow-300 hover:bg-yellow-400 border-2 border-slate-900 px-4 py-2.5 rounded-xl transition-all shadow-[2px_2px_0px_#1e293b] active:translate-y-0.5 active:shadow-[1px_1px_0px_#1e293b] cursor-pointer shrink-0"
           >
             <Sparkles className="w-4 h-4 text-slate-900 fill-yellow-200 animate-pulse" />
             Photo comparison slider
           </button>
         </div>
 
-        {/* 14 Day grid cells */}
-        <div className="grid grid-cols-7 sm:grid-cols-14 gap-2.5">
+        {/* 14 Day grid cells - highly responsive spacing */}
+        <div className="grid grid-cols-7 sm:grid-cols-14 gap-1.5 sm:gap-2.5">
           {fortnight.map((day, idx) => (
             <div 
               key={idx}
-              className={`flex flex-col items-center justify-center p-2 rounded-xl border-2 transition-transform ${
+              className={`flex flex-col items-center justify-center p-1 sm:p-2 rounded-xl border-2 transition-transform ${
                 day.isToday 
-                  ? 'border-slate-900 bg-yellow-100/80 shadow-[2px_2px_0px_#1E293B]' 
+                  ? 'border-slate-900 bg-yellow-105/80 shadow-[2px_2px_0px_#1E293B]' 
                   : day.hasCompleted
                     ? 'border-slate-900 bg-yellow-300 shadow-[1px_1px_0px_#1E293B]'
                     : 'border-slate-200 bg-slate-50/50'

@@ -581,7 +581,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                 {markers.map((pt, i) => (
                   <div
                     key={i}
-                    className={`absolute w-5 h-5 -ml-2.5 -mt-2.5 rounded-full bg-yellow-400 border-2 border-slate-900 flex items-center justify-center text-[10px] font-mono font-black text-slate-900 shadow-[1.5px_1.5px_0px_#1E293B] z-20 transition-transform ${draggedIndex === i ? 'cursor-grabbing scale-125 bg-yellow-300' : 'cursor-grab hover:scale-110'} group/dot`}
+                    className={`absolute w-11 h-11 -ml-[22px] -mt-[22px] rounded-full bg-yellow-400 border-2 border-slate-900 flex items-center justify-center text-xs font-mono font-black text-slate-900 shadow-[1.5px_1.5px_0px_#1E293B] z-20 transition-transform touch-none ${draggedIndex === i ? 'cursor-grabbing scale-125 bg-yellow-300' : 'cursor-grab'} group/dot`}
                     style={{ left: `${pt.x}%`, top: `${pt.y}%` }}
                     onMouseDown={(e) => {
                       e.stopPropagation();
@@ -598,14 +598,14 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                   >
                     {i + 1}
                     
-                    {/* Tiny inline custom delete indicator button */}
+                    {/* Inline custom delete indicator button */}
                     <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         deleteMarker(i);
                       }}
-                      className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 text-white border border-slate-900 flex items-center justify-center text-[8px] font-bold shadow-sm cursor-pointer opacity-80 hover:opacity-100 transition-opacity z-30"
+                      className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 hover:bg-red-650 text-white border-2 border-slate-900 flex items-center justify-center text-[10px] font-bold shadow-md cursor-pointer opacity-90 hover:opacity-100 transition-opacity z-30"
                       title="Remove Point"
                     >
                       ×
@@ -708,7 +708,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="E.g. Feeling lower than last week! Hip feels unlocked."
-                    className="w-full bg-slate-50 border-2 border-slate-900 focus:bg-white focus:ring-0 outline-none rounded-xl py-2.5 px-3.5 text-xs text-slate-800 font-semibold"
+                    className="w-full bg-slate-50 border-2 border-slate-900 focus:bg-white focus:ring-0 outline-none rounded-xl py-3 px-3.5 text-base md:text-xs text-slate-800 font-semibold"
                   />
                 </div>
 
@@ -775,7 +775,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                 <select
                   value={compareLeftId}
                   onChange={(e) => setCompareLeftId(e.target.value)}
-                  className="w-full bg-white border-2 border-slate-900 rounded-xl text-xs py-2 px-2.5 outline-none font-sans font-bold cursor-pointer"
+                  className="w-full bg-white border-2 border-slate-900 rounded-xl text-base md:text-xs py-2.5 px-3 outline-none font-sans font-bold cursor-pointer"
                 >
                   {filteredComparePhotos.map(p => (
                     <option key={p.id} value={p.id}>{p.date} - Angle: {p.angleValue}° ({p.splitType === 'left' ? '◀️ Left' : p.splitType === 'right' ? '▶️ Right' : '🔽 Center'})</option>
@@ -788,7 +788,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                 <select
                   value={compareRightId}
                   onChange={(e) => setCompareRightId(e.target.value)}
-                  className="w-full bg-white border-2 border-slate-900 rounded-xl text-xs py-2 px-2.5 outline-none font-sans font-bold cursor-pointer"
+                  className="w-full bg-white border-2 border-slate-900 rounded-xl text-base md:text-xs py-2.5 px-3 outline-none font-sans font-bold cursor-pointer"
                 >
                   {/* Reversed for easy selection */}
                   {[...filteredComparePhotos].reverse().map(p => (

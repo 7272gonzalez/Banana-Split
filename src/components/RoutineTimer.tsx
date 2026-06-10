@@ -319,55 +319,55 @@ export const RoutineTimer: React.FC<RoutineTimerProps> = ({
 
   if (isFinished) {
     return (
-      <div className="max-w-md mx-auto bento-card border-2 border-slate-900 bg-white rounded-3xl p-6 text-center space-y-6 shadow-[4px_4px_0px_#1e293b] animate-fade-in my-4">
-        <div className="w-20 h-20 bg-yellow-300 text-slate-900 border-2 border-slate-900 rounded-3xl flex items-center justify-center mx-auto shadow-[3px_3px_0px_#1E293B] animate-bounce mt-4">
-          <Award className="w-10 h-10 fill-yellow-200 stroke-slate-900" />
+      <div className="max-w-md w-full mx-auto bento-card border-2 border-slate-900 bg-white rounded-3xl p-4 sm:p-6 text-center space-y-4 sm:space-y-6 shadow-[4px_4px_0px_#1e293b] animate-fade-in my-1 sm:my-4 overflow-hidden">
+        <div className="w-14 h-14 sm:w-20 sm:h-20 bg-yellow-300 text-slate-900 border-2 border-slate-900 rounded-2xl flex items-center justify-center mx-auto shadow-[2px_2px_0px_#1E293B] animate-bounce mt-2 sm:mt-4">
+          <Award className="w-8 h-8 sm:w-10 sm:h-10 fill-yellow-200 stroke-slate-900" />
         </div>
 
         <div>
-          <span className="text-[10px] font-mono uppercase bg-yellow-300 text-slate-900 border border-slate-900 font-black px-3 py-1 rounded-full shadow-[1px_1px_0px_#1E293B]">
+          <span className="text-[9px] sm:text-[10px] font-mono uppercase bg-yellow-300 text-slate-900 border border-slate-900 font-black px-2.5 py-0.5 rounded-full shadow-[1px_1px_0px_#1E293B]">
             Split Progress +1
           </span>
-          <h2 className="text-2xl font-sans font-black text-slate-900 mt-3">Splits Done! Ripe Job!</h2>
-          <p className="text-xs text-slate-500 font-semibold mt-1 max-w-xs mx-auto">
+          <h2 className="text-xl sm:text-2xl font-sans font-black text-slate-900 mt-2 sm:mt-3">Splits Done! Ripe Job!</h2>
+          <p className="text-[11px] sm:text-xs text-slate-500 font-semibold mt-1 max-w-xs mx-auto">
             You successfully completed the <span className="font-extrabold text-slate-900">{routine.name}</span> stretch set. Your hamstrings and hips are thanking you!
           </p>
         </div>
 
         {/* Celebration stats box */}
-        <div className="bg-[#FEFCE8] rounded-2xl p-4 border-2 border-slate-900 flex items-center justify-around divide-x-2 divide-slate-200 shadow-[2px_2px_0px_#1E293B]">
+        <div className="bg-[#FEFCE8] rounded-2xl p-3 sm:p-4 border-2 border-slate-900 flex items-center justify-around divide-x-2 divide-slate-200 shadow-[2px_2px_0px_#1E293B]">
           <div>
-            <span className="text-2xl">⚡️</span>
-            <p className="text-[10px] text-slate-500 font-mono mt-0.5">Time Stretched</p>
-            <p className="font-mono font-black text-sm text-slate-900">
+            <span className="text-xl sm:text-2xl">⚡️</span>
+            <p className="text-[9px] sm:text-[10px] text-slate-500 font-mono mt-0.5">Time Stretched</p>
+            <p className="font-mono font-black text-xs sm:text-sm text-slate-900">
               {formatTime(totalDurationRef.current)}
             </p>
           </div>
-          <div className="pl-4">
-            <span className="text-2xl">🍌</span>
-            <p className="text-[10px] text-slate-500 font-mono mt-0.5">Banana Points</p>
-            <p className="font-mono font-black text-sm text-slate-900">
+          <div className="pl-3 sm:pl-4">
+            <span className="text-xl sm:text-2xl">🍌</span>
+            <p className="text-[9px] sm:text-[10px] text-slate-500 font-mono mt-0.5">Banana Points</p>
+            <p className="font-mono font-black text-xs sm:text-sm text-slate-900">
               +{Math.round((totalDurationRef.current / 60) * 10 * routine.bananaMultiplier)} BP
             </p>
           </div>
         </div>
 
         {/* Informative summary note */}
-        <div className="text-left text-xs bg-slate-50 p-4 rounded-xl border-2 border-slate-900">
-          <p className="font-black text-slate-900 flex items-center gap-1.5 mb-1.5">
-            <Star className="w-4 h-4 fill-yellow-400 stroke-slate-900" /> Quick Recovery Tips:
+        <div className="text-left text-[11px] sm:text-xs bg-slate-50 p-3 sm:p-4 rounded-xl border-2 border-slate-900">
+          <p className="font-black text-slate-900 flex items-center gap-1 mt-[2px] mb-1">
+            <Star className="w-3.5 h-3.5 fill-yellow-400 stroke-slate-900" /> Recovery Tips:
           </p>
-          <ul className="list-disc pl-4 space-y-1 text-slate-600 font-semibold">
-            <li>Drink a dynamic cup of water immediately to rehydrate connective tissues.</li>
+          <ul className="list-disc pl-4 space-y-1 text-slate-600 font-semibold leading-normal">
+            <li>Drink water to rehydrate connective tissues.</li>
             <li>Avoid heavy stretching for at least 12 hours.</li>
-            <li>Open the Progress Tracker tab below and snap a progress photo to calculate your split angle!</li>
+            <li>Snap a photo in the tracker to check your angle!</li>
           </ul>
         </div>
 
-        <div className="flex flex-col gap-2.5 w-full">
+        <div className="flex flex-col gap-2 w-full mt-2">
           <button
             onClick={handleFinalSubmit}
-            className="w-full bento-btn bg-yellow-400 hover:bg-yellow-500 text-slate-950 font-black font-mono py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 text-xs cursor-pointer"
+            className="w-full min-h-[44px] bento-btn bg-yellow-400 hover:bg-yellow-500 text-slate-950 font-black font-mono py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 text-xs cursor-pointer shadow-[1.5px_1.5px_0px_#1e293b] active:translate-y-0.5 transition-all"
           >
             <CheckCircle2 className="w-4 h-4" />
             SAVE LOG & UPDATE STREAK
@@ -375,7 +375,7 @@ export const RoutineTimer: React.FC<RoutineTimerProps> = ({
 
           <button
             onClick={onClose}
-            className="w-full bento-btn bg-white hover:bg-slate-100 text-slate-700 border-2 border-slate-900 font-extrabold font-mono py-3 px-6 rounded-xl flex items-center justify-center gap-2 text-xs cursor-pointer transition-all"
+            className="w-full min-h-[44px] bento-btn bg-white hover:bg-slate-100 text-slate-700 border-2 border-slate-900 font-extrabold font-mono py-2 px-4 rounded-xl flex items-center justify-center gap-1.5 text-xs cursor-pointer shadow-[1.5px_1.5px_0px_#1e293b] active:translate-y-0.5 transition-all"
           >
             DISCARD & RETURN TO MAIN PAGE
           </button>
@@ -385,179 +385,181 @@ export const RoutineTimer: React.FC<RoutineTimerProps> = ({
   }
 
   return (
-    <div className="max-w-3xl mx-auto bento-card bg-white border-2 border-slate-900 rounded-3xl overflow-hidden shadow-[4px_4px_0px_#1e293b] flex flex-col md:flex-row my-4">
+    <div className="w-full max-w-3xl mx-auto bento-card bg-white border-2 border-slate-900 rounded-3xl overflow-hidden shadow-[4px_4px_0px_#1e293b] flex flex-col my-1 sm:my-4">
       
-      {/* Visual illustration Column */}
-      <div className="md:w-1/2 bg-slate-50/50 p-6 flex flex-col justify-between border-b-2 md:border-b-0 md:border-r-2 border-slate-900">
-        <div>
-          <button
-            onClick={onClose}
-            className="text-xs font-mono font-black text-slate-500 hover:text-slate-950 flex items-center gap-1.5 mb-5 cursor-pointer group"
-          >
-            <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-            EXIT WORKOUT
-          </button>
-          
-          <span className="text-[10px] font-mono uppercase bg-yellow-300 text-slate-900 border border-slate-900 font-black px-3 py-1 rounded-full shadow-[1px_1px_0px_#1E293B]">
-            Step {currentStepIdx + 1} of {routine.stretches.length}
-          </span>
-          <h2 className="text-xl font-sans font-black text-slate-900 mt-4 leading-tight">
-            {currentStretch.name}
-          </h2>
-          <p className="text-xs text-slate-500 font-semibold mt-1">
-            🎯 Target: {currentStretch.target}
-          </p>
-        </div>
+      {/* Dynamic unified header controls bar to maximize screen space on mobile */}
+      <div className="flex items-center justify-between border-b-2 border-slate-900 bg-slate-50/50 p-2 sm:p-3 gap-2 shrink-0">
+        <button
+          onClick={onClose}
+          className="flex items-center justify-center gap-1.5 min-h-[44px] px-3 py-2 text-xs font-mono font-black border-2 border-slate-900 bg-white hover:bg-slate-100 text-slate-900 rounded-xl shadow-[1.5px_1.5px_0px_#1e293b] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#1e293b] transition-all cursor-pointer"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          EXIT <span className="hidden sm:inline">WORKOUT</span>
+        </button>
 
-        {/* Dynamic customized Vector Stick illustration inside a clean frame */}
-        <div className="my-6 border-2 border-slate-900 rounded-2xl bg-white p-3 shadow-[2px_2px_0px_#1E293B]">
-          <StretchIllustration type={currentStretch.illustrationType} isActive={isPlaying} />
-        </div>
+        <span className="text-[10px] sm:text-xs font-mono uppercase bg-yellow-300 text-slate-900 border-2 border-slate-900 font-black px-2.5 sm:px-3.5 py-1 rounded-full shadow-[1.5px_1.5px_0px_#1E293B]">
+          Step {currentStepIdx + 1}/{routine.stretches.length}
+        </span>
 
-        {/* Dynamic Stretching Progress Bar */}
-        <div className="space-y-1.5">
-          <div className="flex justify-between text-[10px] text-slate-500 font-mono font-bold">
-            <span>Overall Progress</span>
-            <span>{Math.round(progressPercent)}% Complete</span>
-          </div>
-          <div className="w-full h-3.5 bg-slate-100 border-2 border-slate-900 rounded-full overflow-hidden relative">
-            <div 
-              className="h-full progress-fill border-r border-slate-900 transition-all duration-300 rounded-full"
-              style={{ width: `${progressPercent}%` }}
-            ></div>
-          </div>
-        </div>
+        <button 
+          onClick={() => setSoundEnabled(!soundEnabled)}
+          className={`w-11 h-11 flex items-center justify-center rounded-xl transition-all border-2 border-slate-900 cursor-pointer shadow-[1.5px_1.5px_0px_#1E293B] active:translate-y-0.5 active:shadow-[1px_1px_0px_#1e293b] ${
+            soundEnabled 
+              ? 'bg-yellow-300 text-slate-900' 
+              : 'text-slate-300 bg-white'
+          }`}
+          title={soundEnabled ? "Mute beep sound" : "Enable beep sound"}
+        >
+          <Volume2 className="w-4 h-4 text-slate-900" />
+        </button>
       </div>
 
-      {/* Control Timer Column */}
-      <div className="md:w-1/2 p-6 flex flex-col justify-between space-y-6">
-        
-        {/* Toggle Sound status button */}
-        <div className="flex justify-end">
-          <button 
-            onClick={() => setSoundEnabled(!soundEnabled)}
-            className={`p-2 rounded-xl transition-all border-2 border-slate-900 cursor-pointer shadow-[2px_2px_0px_#1E293B] active:translate-y-0.5 active:shadow-[1px_1px_0px_#1e293b] ${
-              soundEnabled 
-                ? 'bg-yellow-300 text-slate-900' 
-                : 'text-slate-300 bg-white'
-            }`}
-            title={soundEnabled ? "Mute beep sound" : "Enable beep sound"}
-          >
-            <Volume2 className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Big Circular Clock Interface */}
-        <div className="flex items-center justify-center relative">
-          <svg className="w-40 h-40 transform -rotate-90">
-            {/* Outer Background ring */}
-            <circle
-              cx="80"
-              cy="80"
-              r={circleRadius}
-              className="stroke-slate-100"
-              strokeWidth="7"
-              fill="transparent"
-            />
-            {/* Animated countdown border */}
-            <circle
-              cx="80"
-              cy="80"
-              r={circleRadius}
-              stroke="#eab308"
-              className="transition-all duration-1000 ease-linear"
-              strokeWidth="8"
-              strokeDasharray={strokeCircumference}
-              strokeDashoffset={strokeDashoffset}
-              strokeLinecap="round"
-              fill="transparent"
-            />
-          </svg>
-          
-          {/* Inner numeric counter */}
-          <div className="absolute text-center">
-            <span className="text-3xl font-sans font-black text-slate-950 font-mono">
-              {formatTime(timeLeft)}
-            </span>
-            <p className="text-[9px] font-mono text-slate-500 uppercase font-black tracking-wider mt-0.5">
-              {isPlaying ? 'PEEL STRETCH' : 'PAUSED'}
-            </p>
-          </div>
-        </div>
-
-        {/* Action Controls panel */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-center gap-4">
-            {/* Reset step */}
-            <button
-              onClick={handleResetStretch}
-              className="p-3.5 border-2 border-slate-900 text-slate-900 hover:bg-slate-100 bg-white rounded-2xl transition-all shadow-[2px_2px_0px_#1E293B] active:translate-y-0.5 active:shadow-[1px_1px_0px_#1E293B] cursor-pointer"
-              title="Reset timer"
-            >
-              <RefreshCw className="w-4 h-4" />
-            </button>
-
-            {/* Back to previous pose */}
-            <button
-              onClick={handlePrev}
-              disabled={currentStepIdx === 0}
-              className={`p-3.5 border-2 border-slate-900 rounded-2xl transition-all shadow-[2px_2px_0px_#1E293B] active:translate-y-0.5 active:shadow-[1px_1px_0px_#1E293B] ${
-                currentStepIdx === 0 
-                  ? 'bg-slate-100 text-slate-350 border-slate-300 shadow-none cursor-not-allowed opacity-50' 
-                  : 'text-slate-900 hover:bg-slate-100 bg-white cursor-pointer'
-              }`}
-              title="Go back to previous pose"
-            >
-              <SkipBack className="w-4 h-4" />
-            </button>
-
-            {/* Main Play/Pause */}
-            <button
-              onClick={handleTogglePlay}
-              className={`p-5 rounded-3xl text-slate-900 transform hover:scale-105 active:scale-95 transition-all border-2 border-slate-900 cursor-pointer shadow-[3px_3px_0px_#1E293B] active:translate-y-0.5 active:shadow-[1px_1px_0px_#1E293B] ${
-                isPlaying 
-                  ? 'bg-amber-100 font-black' 
-                  : 'bg-yellow-405 bg-yellow-400 font-black'
-              }`}
-            >
-              {isPlaying ? <Pause className="w-6 h-6 fill-slate-900" /> : <Play className="w-6 h-6 fill-slate-900" />}
-            </button>
-
-            {/* Skip step */}
-            <button
-              onClick={handleSkip}
-              className="p-3.5 border-2 border-slate-900 text-slate-900 hover:bg-slate-100 bg-white rounded-2xl transition-all shadow-[2px_2px_0px_#1E293B] active:translate-y-0.5 active:shadow-[1px_1px_0px_#1E293B] cursor-pointer"
-              title="Skip step"
-            >
-              <SkipForward className="w-4 h-4" />
-            </button>
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+        {/* Visual illustration Column */}
+        <div className="md:w-1/2 bg-slate-50/20 p-3 sm:p-6 flex flex-col justify-between border-b-2 md:border-b-0 md:border-r-2 border-slate-900">
+          <div className="space-y-1 shrink-0">
+            <h2 className="text-base sm:text-lg md:text-xl font-sans font-black text-slate-900 leading-tight">
+              {currentStretch.name}
+            </h2>
           </div>
 
-          <button
-            onClick={handleFinishEarly}
-            className="w-full text-center text-xs font-black font-mono text-slate-400 hover:text-amber-800 transition-colors py-1 cursor-pointer"
-          >
-            FINISH ROUTINE EARLY
-          </button>
-        </div>
+          {/* Dynamic customized Vector Stick illustration inside a clean frame */}
+          <div className="my-2 sm:my-3 border-2 border-slate-900 rounded-xl bg-white p-2 shadow-[1.5px_1.5px_0px_#1E293B] shrink-0">
+            <StretchIllustration type={currentStretch.illustrationType} isActive={isPlaying} />
+          </div>
 
-        {/* Written step descriptions */}
-        <div className="bg-yellow-100/60 border-2 border-slate-900 rounded-2xl p-4 space-y-2.5 text-xs shadow-[2px_2px_0px_#1E293B]">
-          <span className="font-mono text-[9px] font-black text-slate-900 uppercase tracking-widest block">
-            ⭐ Stretching Instructions:
-          </span>
-          <ol className="list-decimal pl-4 text-slate-700 font-semibold space-y-1.5 leading-relaxed">
-            {currentStretch.instructions.map((inst, idx) => (
-              <li key={idx}>{inst}</li>
-            ))}
-          </ol>
-          {currentStretch.tips && (
-            <div className="pt-2 border-t border-slate-900/10 text-[11px] text-slate-805 italic mt-1.5 leading-relaxed font-semibold">
-              <span className="font-black text-slate-900 not-italic">Banana Tip:</span> {currentStretch.tips}
+          {/* Dynamic Stretching Progress Bar */}
+          <div className="space-y-1 bg-white p-2 border border-slate-900 rounded-xl shadow-[1px_1px_0px_#1E293B] shrink-0">
+            <div className="flex justify-between text-[9px] text-slate-500 font-mono font-extrabold uppercase">
+              <span>Progress</span>
+              <span>{Math.round(progressPercent)}% Done</span>
             </div>
-          )}
+            <div className="w-full h-2.5 bg-slate-50 border border-slate-900 rounded-full overflow-hidden relative">
+              <div 
+                className="h-full progress-fill border-r border-slate-900 transition-all duration-300 rounded-full"
+                style={{ width: `${progressPercent}%` }}
+              ></div>
+            </div>
+          </div>
         </div>
 
+        {/* Control Timer Column */}
+        <div className="md:w-1/2 p-3 sm:p-6 flex flex-col justify-between space-y-3 sm:space-y-4 flex-1 bg-white">
+          
+          {/* Big Circular Clock Interface with static viewBox for robust scaling */}
+          <div className="flex items-center justify-center relative my-1 shrink-0">
+            <svg viewBox="0 0 160 160" className="w-24 h-24 sm:w-32 sm:h-32 transform -rotate-90">
+              {/* Outer Background ring */}
+              <circle
+                cx="80"
+                cy="80"
+                r={circleRadius}
+                className="stroke-slate-100"
+                strokeWidth="7"
+                fill="transparent"
+              />
+              {/* Animated countdown border */}
+              <circle
+                cx="80"
+                cy="80"
+                r={circleRadius}
+                stroke="#eab308"
+                className="transition-all duration-1000 ease-linear"
+                strokeWidth="8"
+                strokeDasharray={strokeCircumference}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+                fill="transparent"
+              />
+            </svg>
+            
+            {/* Inner numeric counter */}
+            <div className="absolute text-center">
+              <span className="text-xl sm:text-2xl font-sans font-black text-slate-950 font-mono tracking-tight">
+                {formatTime(timeLeft)}
+              </span>
+              <p className="text-[8px] font-mono text-slate-450 uppercase font-black tracking-widest mt-0.5">
+                {isPlaying ? 'STRETCHING' : 'PAUSED'}
+              </p>
+            </div>
+          </div>
+
+          {/* Action Controls panel */}
+          <div className="space-y-1.5 shrink-0">
+            <div className="flex items-center justify-center gap-2.5">
+              {/* Reset step */}
+              <button
+                onClick={handleResetStretch}
+                className="w-11 h-11 flex items-center justify-center border-2 border-slate-900 text-slate-900 hover:bg-slate-100 bg-white rounded-xl transition-all shadow-[1.5px_1.5px_0px_#1E293B] active:translate-y-0.5 active:shadow-[1px_1px_0px_#1E293B] cursor-pointer"
+                title="Reset timer"
+              >
+                <RefreshCw className="w-4 h-4" />
+              </button>
+
+              {/* Back to previous pose */}
+              <button
+                onClick={handlePrev}
+                disabled={currentStepIdx === 0}
+                className={`w-11 h-11 flex items-center justify-center border-2 border-slate-900 rounded-xl transition-all shadow-[1.5px_1.5px_0px_#1E293B] active:translate-y-0.5 active:shadow-[1px_1px_0px_#1E293B] ${
+                  currentStepIdx === 0 
+                    ? 'bg-slate-100 text-slate-350 border-slate-300 shadow-none cursor-not-allowed opacity-50' 
+                    : 'text-slate-900 hover:bg-slate-100 bg-white cursor-pointer'
+                }`}
+                title="Go back to previous pose"
+              >
+                <SkipBack className="w-4 h-4" />
+              </button>
+
+              {/* Main Play/Pause */}
+              <button
+                onClick={handleTogglePlay}
+                className={`w-14 h-14 flex items-center justify-center rounded-2xl text-slate-900 transform hover:scale-105 active:scale-95 transition-all border-2 border-slate-900 cursor-pointer shadow-[2px_2px_0px_#1E293B] active:translate-y-0.5 active:shadow-[1px_1px_0px_#1E293B] ${
+                  isPlaying 
+                    ? 'bg-amber-100 font-black' 
+                    : 'bg-yellow-405 bg-yellow-400 font-black'
+                }`}
+              >
+                {isPlaying ? <Pause className="w-5 h-5 fill-slate-900" /> : <Play className="w-5 h-5 fill-slate-900" />}
+              </button>
+
+              {/* Skip step */}
+              <button
+                onClick={handleSkip}
+                className="w-11 h-11 flex items-center justify-center border-2 border-slate-900 text-slate-900 hover:bg-slate-100 bg-white rounded-xl transition-all shadow-[1.5px_1.5px_0px_#1E293B] active:translate-y-0.5 active:shadow-[1px_1px_0px_#1E293B] cursor-pointer"
+                title="Skip step"
+              >
+                <SkipForward className="w-4 h-4" />
+              </button>
+            </div>
+
+            <button
+              onClick={handleFinishEarly}
+              className="w-full text-center text-[10px] font-black font-mono text-slate-400 hover:text-amber-800 transition-colors py-0.5 cursor-pointer animate-pulse"
+            >
+              FINISH ROUTINE EARLY
+            </button>
+          </div>
+
+          {/* Written step descriptions - scrollable inside tight max height constraints on mobile */}
+          <div className="bg-yellow-101/60 bg-yellow-105/50 border-2 border-slate-900 rounded-xl p-2.5 sm:p-4 text-xs shadow-[1.5px_1.5px_0px_#1E293B] overflow-hidden flex flex-col min-h-[90px] max-h-[130px] md:max-h-none flex-1">
+            <span className="font-mono text-[9px] font-black text-slate-900 uppercase tracking-widest block shrink-0 mb-1">
+              ⭐ Stretching Instructions:
+            </span>
+            <div className="overflow-y-auto flex-1 pr-1 text-slate-700 font-semibold space-y-1">
+              <ol className="list-decimal pl-4 space-y-1.5">
+                {currentStretch.instructions.map((inst, idx) => (
+                  <li key={idx} className="leading-snug">{inst}</li>
+                ))}
+              </ol>
+              {currentStretch.tips && (
+                <div className="pt-1 border-t border-slate-900/10 text-[10px] text-slate-800 italic mt-1 leading-snug font-semibold">
+                  <span className="font-black text-slate-900 not-italic">Banana Tip:</span> {currentStretch.tips}
+                </div>
+              )}
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   );

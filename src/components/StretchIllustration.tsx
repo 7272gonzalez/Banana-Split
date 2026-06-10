@@ -42,7 +42,7 @@ export const StretchIllustration: React.FC<StretchIllustrationProps> = ({ type, 
   const currentPhoto = imageMap[type];
 
   return (
-    <div className={`relative w-full h-52 bg-[#FAF6F0] rounded-2xl border-4 border-slate-950 flex flex-col items-center justify-center overflow-hidden shadow-[4px_4px_0px_#1e293b] transition-all duration-300 ${
+    <div className={`relative w-full h-28 sm:h-44 md:h-52 bg-[#FAF6F0] rounded-2xl border-4 border-slate-950 flex flex-col items-center justify-center overflow-hidden shadow-[4px_4px_0px_#1e293b] transition-all duration-300 ${
       isActive ? 'ring-4 ring-emerald-400 border-emerald-500' : ''
     }`}>
       

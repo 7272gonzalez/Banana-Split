@@ -41,7 +41,7 @@ export function PrivacySecurity({ onBack }: PrivacySecurityProps) {
           <button
             id="privacy-back-btn"
             onClick={onBack}
-            className="flex items-center gap-1.5 text-xs font-mono font-black border-2 border-slate-900 bg-white hover:bg-yellow-100 text-slate-900 py-1.5 px-3 rounded-xl shadow-[2px_2px_0px_#1e293b] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#1e293b] transition-all cursor-pointer mb-2"
+            className="flex items-center justify-center gap-1.5 min-h-[44px] py-2.5 px-4 text-xs font-mono font-black border-2 border-slate-900 bg-white hover:bg-yellow-100 text-slate-900 rounded-xl shadow-[2px_2px_0px_#1e293b] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#1e293b] transition-all cursor-pointer mb-3"
           >
             <ArrowLeft className="w-4 h-4" />
             BACK TO DASHBOARD
@@ -139,23 +139,23 @@ export function PrivacySecurity({ onBack }: PrivacySecurityProps) {
 
           <div className="shrink-0 w-full md:w-auto">
             {cleared ? (
-              <div className="bg-emerald-100 border-2 border-emerald-950 px-4 py-2.5 rounded-xl font-mono text-xs font-black text-emerald-950 flex items-center justify-center gap-1.5 animate-pulse">
+              <div className="min-h-[44px] bg-emerald-100 border-2 border-emerald-950 px-4 py-2.5 rounded-xl font-mono text-xs font-black text-emerald-950 flex items-center justify-center gap-1.5 animate-pulse">
                 <RefreshCw className="w-4 h-4 animate-spin" />
                 ERASED. RELOADING...
               </div>
             ) : confirmClear ? (
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                 <button
                   id="privacy-confirm-clear"
                   onClick={handleClearAllData}
-                  className="bg-rose-600 hover:bg-rose-700 text-white font-mono font-black text-xs py-2.5 px-4 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_#1e293b] cursor-pointer"
+                  className="min-h-[44px] flex-1 sm:flex-none flex items-center justify-center bg-rose-600 hover:bg-rose-700 text-white font-mono font-black text-xs py-2.5 px-4 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_#1e293b] cursor-pointer"
                 >
                   YES, ERASE EVERYTHING
                 </button>
                 <button
                   id="privacy-cancel-clear"
                   onClick={() => setConfirmClear(false)}
-                  className="bg-slate-200 hover:bg-slate-350 text-slate-950 font-mono font-black text-xs py-2.5 px-4 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_#1e293b] cursor-pointer"
+                  className="min-h-[44px] flex-1 sm:flex-none flex items-center justify-center bg-slate-200 hover:bg-slate-350 text-slate-950 font-mono font-black text-xs py-2.5 px-4 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_#1e293b] cursor-pointer"
                 >
                   CANCEL
                 </button>
@@ -164,7 +164,7 @@ export function PrivacySecurity({ onBack }: PrivacySecurityProps) {
               <button
                 id="privacy-wipe-trigger-btn"
                 onClick={() => setConfirmClear(true)}
-                className="w-full bg-white hover:bg-rose-100 hover:text-rose-900 text-rose-700 font-mono font-black text-xs py-3 px-5 rounded-2xl border-2 border-slate-900 shadow-[2px_2px_0px_#1e293b] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer text-center"
+                className="w-full min-h-[44px] flex items-center justify-center bg-white hover:bg-rose-100 hover:text-rose-900 text-rose-700 font-mono font-black text-xs py-3 px-5 rounded-2xl border-2 border-slate-900 shadow-[2px_2px_0px_#1e293b] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer text-center"
               >
                 SECURELY ERASE ALL MY DATA
               </button>
