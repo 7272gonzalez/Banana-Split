@@ -4,7 +4,7 @@ export const ROUTINES: Routine[] = [
   {
     id: 'front-split-prep',
     name: 'Front Splits Prep',
-    description: 'A gentle, master-crafted beginner routine targeting hamstrings and hip flexors for daily split progress.',
+    description: 'A gentle beginner routine targeting hamstrings and hip flexors for daily split progress.',
     durationMinutes: 9,
     level: 'Beginner',
     focus: 'Front Split',
@@ -13,7 +13,7 @@ export const ROUTINES: Routine[] = [
       {
         id: 'fs-1',
         name: 'Low Lunge (Left Side Setup)',
-        target: 'Hip flexors (psoas) of the right leg, readying the splits extension.',
+        target: 'Hip flexors of the right leg to prepare for splits.',
         duration: 45,
         tips: 'Keep your chest tall and shoulders rolled down. Press your hips downwards gently without bouncing. Your left knee should stay behind or over your ankle, not past your toes.',
         instructions: [
@@ -41,7 +41,7 @@ export const ROUTINES: Routine[] = [
       {
         id: 'fs-3',
         name: 'Half Split Fold (Left Hamstring)',
-        target: 'Hamstrings and calves on the left leg, crucial for splitting.',
+        target: 'Hamstrings and calves on the left leg.',
         duration: 60,
         tips: 'Keep your right hip stacked directly over your right knee. Flex your left toes up towards the sky and try to hinge from your hips with a flat back, rather than rounding your upper shoulders.',
         instructions: [
@@ -69,7 +69,7 @@ export const ROUTINES: Routine[] = [
       {
         id: 'fs-5',
         name: 'Kneeling Quad Stretch (Left Quad / Right Hip)',
-        target: 'Anterior chain expansion (quadriceps and deep psoas).',
+        target: 'Front thigh and hip stretch.',
         duration: 45,
         tips: 'If this hurts your back knee, double up your yoga mat or slide a thin pillow underneath. Use your hand to pull your heel in line with your sit bones.',
         instructions: [
@@ -83,7 +83,7 @@ export const ROUTINES: Routine[] = [
       {
         id: 'fs-6',
         name: 'Kneeling Quad Stretch (Right Quad / Left Hip)',
-        target: 'Anterior chain expansion of the left thigh and quadriceps.',
+        target: 'Stretch for the left thigh.',
         duration: 45,
         tips: 'Hold onto a wall or a chair with your free hand for stability if you feel shaky.',
         instructions: [
@@ -124,7 +124,7 @@ export const ROUTINES: Routine[] = [
       },
       {
         id: 'fs-9',
-        name: 'Guided Banana Split Practice (Left Side Splits Hold)',
+        name: 'Left Side Splits Hold',
         target: 'Active splits extension on the left side (left foot forward).',
         duration: 60,
         tips: 'NEVER force a full split. Use pillows, blocks, or your hands on the ground to support your weight. Slowly slide your heel out while keeping hips square. Only slide until you feel an 8/10 intensity, never pain.',
@@ -138,7 +138,7 @@ export const ROUTINES: Routine[] = [
       },
       {
         id: 'fs-10',
-        name: 'Guided Banana Split Practice (Right Side Splits Hold)',
+        name: 'Right Side Splits Hold',
         target: 'Active splits extension on the right side (right foot forward).',
         duration: 60,
         tips: 'Be mindful if one side feels significantly tighter than the other—it is completely normal! Back off slightly on your tighter side to avoid strain and focus on deep breathing.',
@@ -155,7 +155,7 @@ export const ROUTINES: Routine[] = [
   {
     id: 'middle-split-prep',
     name: 'Middle Splits Prep',
-    description: 'A deep inner thigh and pelvis opener designed to unlock your hip joints and lateral flexibility.',
+    description: 'An inner thigh and hip stretch to help improve side flexibility.',
     durationMinutes: 8,
     level: 'Beginner',
     focus: 'Middle Split',
@@ -192,7 +192,7 @@ export const ROUTINES: Routine[] = [
       {
         id: 'ms-3',
         name: 'Frog Stretch (Adductor Special)',
-        target: 'The ultimate side-splits prep, mobilizing deep hip sockets and groin.',
+        target: 'A helpful side-splits stretch to loosen your hip joints and groin.',
         duration: 90,
         tips: 'Keep your hips aligned directly between your knees, not pushed forward or backward. Your lower legs should be parallel, with feet flexed.',
         instructions: [
@@ -213,7 +213,7 @@ export const ROUTINES: Routine[] = [
           'Step your left foot forward past the outside of your left hand.',
           'Lower your right knee and shin to the mat, letting your hips sink fully forward.',
           'Bring both elbows or forearms down onto the mat (or onto a yoga block).',
-          'Keep your chest reaching forward and breathe into the deep heat of your hips.'
+          'Keep your chest reaching forward and breathe as you stretch your hips.'
         ],
         illustrationType: 'lizard'
       },
@@ -222,7 +222,7 @@ export const ROUTINES: Routine[] = [
         name: 'Deep Lizard Lunge (Right Side)',
         target: 'Inner thighs, groin, and left hip flexor openers.',
         duration: 60,
-        tips: 'Release tension in your jaw and neck while holding. Deep, oceanic sighs help the nervous system allow deeper ranges of motion.',
+        tips: 'Release tension in your jaw and neck while holding. Deep, slow breathing helps you relax into the stretch.',
         instructions: [
           'Step your right foot far forward, outside of your right palm.',
           'Lower your left knee to the floor, releasing the leg behind you.',
@@ -233,7 +233,7 @@ export const ROUTINES: Routine[] = [
       },
       {
         id: 'ms-6',
-        name: 'Guided Side Split Practice (Active Middle Splits Hold)',
+        name: 'Active Middle Splits Hold',
         target: 'Side-split stance rehearsal and active adductor strength.',
         duration: 90,
         tips: 'Keep your core engaged. Supporting yourself on your elbows, slide your knees (with pad protection) or feet wide. Go slowly, and concentrate on letting your weight settle onto your arms.',

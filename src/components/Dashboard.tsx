@@ -24,26 +24,26 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const getRipenessBadge = (streak: number, total: number) => {
     if (total >= 15 || streak >= 7) {
       return {
-        title: 'Perfect Split Banana',
-        desc: 'Fully ripe! You are supple, bouncy, and touching the floor.',
+        title: 'Split Pro',
+        desc: 'Consistent and comfortable with deep stretches.',
         bg: 'bg-yellow-300 text-slate-900',
-        icon: '🍌👑',
-        req: 'Maximum tier unlocked!'
+        icon: '👑⭐',
+        req: 'Top rank reached!'
       };
     } else if (total >= 5 || streak >= 3) {
       return {
-        title: 'Golden Sweet Yellow',
-        desc: 'No green spots. Hips are loose, muscles are starting to lengthen.',
+        title: 'Split Student',
+        desc: 'Good progress. Hips and legs are feeling much looser.',
         bg: 'bg-amber-100 text-slate-900',
-        icon: '🍌✨',
+        icon: '🙌✨',
         req: 'Next: 15 sessions or a 7-day streak'
       };
     } else {
       return {
-        title: 'Fresh Green Banana',
-        desc: 'Slightly firm, but packed with potential! Perfect starting point.',
+        title: 'Split Beginner',
+        desc: 'Perfect starting rank. Consistency is key.',
         bg: 'bg-emerald-100 text-slate-900',
-        icon: '🌱🍌',
+        icon: '🌱🤸',
         req: 'Next: 5 sessions or a 3-day streak'
       };
     }
@@ -144,20 +144,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
       <div className="bento-card bg-amber-100/70 p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 border-2 border-slate-900">
         <div>
           <span className="text-[10px] font-mono font-bold tracking-wider text-slate-900 uppercase bg-yellow-300 border border-slate-900 px-3 py-1 rounded-full shadow-[2px_2px_0px_#1e293b]">
-            Flexibility Workspace
+            Dashboard
           </span>
           <h1 className="text-3xl md:text-4xl font-sans font-extrabold text-slate-900 tracking-tight mt-3">
-            Keep peeling forward! 🍌
+            Ready to stretch? 🍌
           </h1>
           <p className="text-sm text-slate-700/95 mt-2 max-w-xl font-medium leading-relaxed">
-            Welcome to <span className="font-extrabold text-slate-900">Banana Split</span>, your personalized beginner split trainer. Pick a daily stretch below to heat up your hips.
+            Welcome to <span className="font-extrabold text-slate-900">Banana Split</span>, a simple app to track your flexibility journey. Pick a routine below to begin your session.
           </p>
         </div>
         
         {/* Quick badge stats info */}
         <div className="flex flex-col sm:flex-row gap-3 shrink-0 items-stretch sm:items-center w-full sm:w-auto">
           <div className="px-5 py-3 bento-card bg-white font-mono text-slate-950 text-xs font-bold uppercase shadow-[2px_2px_0px_#1e293b] text-center">
-            Level: Flexible Rookie
+            Level: Beginner
           </div>
           <button 
             onClick={() => {
@@ -194,7 +194,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="my-5">
             <span className="text-5xl font-extrabold font-sans leading-none">{stats.streak} Days</span>
             <p className="text-xs font-semibold text-emerald-900/90 mt-2">
-              {stats.streak === 0 ? 'Stretch today to ignite your daily burn!' : 'Each day of consistency multiplies hamstring flexibility.'}
+              {stats.streak === 0 ? 'Stretch today to start your streak!' : 'Practicing every day helps improve your flexibility.'}
             </p>
           </div>
           <div className="text-[10px] font-mono uppercase bg-white/40 px-2 py-1 rounded-md border border-slate-900/20 font-bold self-start">
@@ -206,8 +206,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="md:col-span-5 bento-card p-6 flex flex-col justify-between bg-indigo-100 border-2 border-slate-900 text-slate-950">
           <div className="flex justify-between items-start mb-2">
             <div>
-              <span className="text-[10px] font-mono uppercase text-indigo-950 font-black tracking-widest">Milestones Tracker</span>
-              <h3 className="font-extrabold text-lg text-slate-950 mt-0.5 font-sans">180° Touchdown Progress</h3>
+              <span className="text-[10px] font-mono uppercase text-indigo-950 font-black tracking-widest">Milestones</span>
+              <h3 className="font-extrabold text-lg text-slate-950 mt-0.5 font-sans">Splits Progress</h3>
             </div>
           </div>
           
@@ -281,7 +281,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
             ) : (
               <p className="leading-tight text-[11px] font-sans font-bold text-indigo-950">
-                Keep stretching daily! Log webcam snaps to calibrate angles of left, right, or center folds.
+                Stretch daily and save photos to track your angle over time.
               </p>
             )}
           </div>
@@ -342,7 +342,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {badge.icon}
             </span>
             <div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500">Ripeness Class Badge</span>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500">Progress Badge</span>
               <h4 className="text-lg font-extrabold leading-tight text-slate-900 mt-0.5">{badge.title}</h4>
               <p className="text-xs font-semibold text-slate-700 mt-1 max-w-xl leading-relaxed">{badge.desc}</p>
             </div>
@@ -370,8 +370,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* Main Stretching Routines Selector */}
       <div id="stretches-flavor" className="pt-4">
         <div className="mb-4">
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Today's Stretching Flavor</h2>
-          <p className="text-xs text-slate-500 font-semibold mt-1">Pick a custom targeted routine to unlock your pelvis & legs.</p>
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Stretching Routines</h2>
+          <p className="text-xs text-slate-500 font-semibold mt-1">Select a routine below to begin your session.</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -391,7 +391,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     {routine.level}
                   </span>
                   <span className="text-[11px] font-mono font-bold text-slate-400">
-                    {routine.stretches.length} stretched moves
+                    {routine.stretches.length} stretches
                   </span>
                 </div>
 
@@ -420,7 +420,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 className="w-full min-h-[44px] bg-[#FEFCE8] hover:bg-yellow-400 text-slate-900 font-sans font-bold text-xs py-3.5 px-4 flex items-center justify-center gap-2 transition-colors border-t-2 border-slate-900 cursor-pointer"
               >
                 <Play className="w-3.5 h-3.5 fill-slate-900" />
-                START TARGET ROUTINE
+                START ROUTINE
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -434,8 +434,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-sans font-extrabold text-slate-900">Banana Peel Stretch Calendar</h3>
-              <p className="text-xs text-slate-500 font-semibold">Your daily workout log for the past two weeks.</p>
+              <h3 className="text-base font-sans font-extrabold text-slate-900">Stretch Calendar</h3>
+              <p className="text-xs text-slate-500 font-semibold">Your workout logs for the past 14 days.</p>
             </div>
           </div>
           <button 

@@ -344,9 +344,9 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
           {photos.length === 0 ? (
             <div className="bg-white border-2 border-slate-900 bento-card rounded-3xl p-10 text-center space-y-4 max-w-md mx-auto shadow-[4px_4px_0px_#1e293b]">
               <span className="text-4xl bg-yellow-100 p-4 rounded-2xl border-2 border-slate-900 shadow-[2px_2px_0px_#1E293B] inline-block animate-bounce">🍌</span>
-              <h3 className="text-xl font-sans font-extrabold text-slate-900">Your Splits Track is Empty</h3>
+              <h3 className="text-xl font-sans font-extrabold text-slate-900">Your Gallery is Empty</h3>
               <p className="text-xs text-slate-500 font-semibold leading-relaxed max-w-xs mx-auto">
-                No progress photos recorded yet. Stretch today, take a webcam lunge snap, and estimate your split angle with our built-in protractor widget!
+                No progress photos saved yet. Complete a routine, save a photo, and measure your split angle to see your progress over time.
               </p>
               <button
                 onClick={() => setActiveTab('add')}
@@ -449,7 +449,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                 </div>
                 <div>
                   <h4 className="text-xs font-mono font-black text-slate-900 uppercase">Use Webcam Camera</h4>
-                  <p className="text-[10px] text-slate-500 font-semibold mt-1 leading-relaxed">Capture your stretch directly via window camera access.</p>
+                  <p className="text-[10px] text-slate-500 font-semibold mt-1 leading-relaxed">Take a picture using your webcam.</p>
                 </div>
               </button>
 
@@ -466,7 +466,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                 </div>
                 <div>
                   <h4 className="text-xs font-mono font-black text-slate-900 uppercase">Select Local File</h4>
-                  <p className="text-[10px] text-slate-500 font-semibold mt-1 leading-relaxed">Import JPEG/PNG from your mobile or desktop folders.</p>
+                  <p className="text-[10px] text-slate-500 font-semibold mt-1 leading-relaxed">Upload an image from your device.</p>
                 </div>
               </label>
             </div>
@@ -513,12 +513,12 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
               <div className="p-4 bg-yellow-100 border-2 border-slate-900 rounded-2xl space-y-1.5 shadow-[2px_2px_0px_#1E293B]">
                 <p className="text-xs font-mono font-black text-slate-900 uppercase flex items-center gap-1.5">
                   <Compass className="w-4 h-4 text-slate-900" />
-                  Banana Split Angle Protractor (Click to Place Hips & Feet)
+                  Angle Measurement Tool
                 </p>
                 <p className="text-[10px] text-slate-800 font-semibold leading-relaxed">
-                  Help us calculate your split angle! Click 3 exact points on your photo: <br/>
+                  To measure your split angle, place 3 points on your photo: <br/>
                   <strong className="text-slate-950 font-bold font-mono">1st click: Left Foot</strong> ➔ 
-                  <strong className="text-slate-950 font-bold font-mono"> 2nd click: Pelvis center</strong> ➔ 
+                  <strong className="text-slate-950 font-bold font-mono"> 2nd click: Pelvis centre</strong> ➔ 
                   <strong className="text-slate-950 font-bold font-mono"> 3rd click: Right Foot</strong>.
                 </p>
               </div>
@@ -737,8 +737,8 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
         <div className="max-w-2xl mx-auto bento-card bg-white border-2 border-slate-900 rounded-3xl p-5 shadow-[4px_4px_0px_#1e293b] space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h3 className="text-xl font-sans font-extrabold text-slate-900">Before / After Split Sandbox Slider</h3>
-              <p className="text-xs text-slate-500 font-semibold mt-1">Choose two historical entries. Drag the bar sideways to overlay your depth gains.</p>
+              <h3 className="text-xl font-sans font-extrabold text-slate-900">Compare Progress</h3>
+              <p className="text-xs text-slate-500 font-semibold mt-1">Choose two photos. Move the slider left and right to see your progress.</p>
             </div>
           </div>
 
@@ -863,7 +863,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
               {/* Slider hints help row */}
               <div className="flex items-center gap-2 text-[10px] text-slate-500 font-semibold justify-center">
                 <Info className="w-4 h-4 text-yellow-500" />
-                <span>Drag your cursor or swipe back/forth on the photo to peel apart progress!</span>
+                <span>Move the slider left and right to compare your photos.</span>
               </div>
               
               {/* Angle metric improvement box */}
@@ -871,14 +871,14 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                 <div className="bg-emerald-100 border-2 border-slate-900 p-5 rounded-2xl text-center space-y-1 shadow-[2px_2px_0px_#1e293b]">
                   <span className="text-2xl">🏆</span>
                   <p className="text-sm font-sans font-black text-slate-900 leading-none">
-                    Pelvis Improvement Angle: +{Math.max(0, rightPhotoCompare.angleValue - leftPhotoCompare.angleValue)}° Closer to Split touchdown!
+                    Angle Improvement: +{Math.max(0, rightPhotoCompare.angleValue - leftPhotoCompare.angleValue)}° Closer to a full split!
                   </p>
                   <p className="text-[10px] text-slate-700 font-bold leading-relaxed mt-2 flex flex-col gap-1 items-center justify-center">
                     <span>
                       Type: <b className="font-mono uppercase text-emerald-900 bg-white border border-emerald-900/20 px-1.5 py-0.5 rounded text-[9px]">{leftPhotoCompare.splitType === 'left' ? '◀️ Left' : leftPhotoCompare.splitType === 'right' ? '▶️ Right' : '🔽 Center'}</b>
                     </span>
                     <span>
-                      Your hips have widened from {leftPhotoCompare.angleValue}° on {leftPhotoCompare.date} to {rightPhotoCompare.angleValue}° on {rightPhotoCompare.date}. Keep up the delicious daily stretches!
+                      Your angle increased from {leftPhotoCompare.angleValue}° on {leftPhotoCompare.date} to {rightPhotoCompare.angleValue}° on {rightPhotoCompare.date}. Keep up the consistent practice!
                     </span>
                   </p>
                 </div>
